@@ -56,9 +56,13 @@ class tornado {
     ensure  => installed,
     provider => apt
   }
+  
+  exec { "python /vagrant/main.py":
+    path => "/usr/bin/"
+  }
 }
 
-class {'update':}
+#class {'update':}
 class {'tornado':}
 
 #sudo apt-get install 
@@ -67,7 +71,6 @@ class {'tornado':}
 #pep8 
 #python-nose 
 #python-coverage
-#python-gdal
 #python-sphinx 
 #pyqt4-dev-tools 
 #pyflakes

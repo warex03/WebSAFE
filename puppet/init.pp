@@ -33,7 +33,7 @@ class inasafe {
   }
 }
 
-class {'update':}
+#class {'update':}
 class {'inasafe':}
 
 #sudo pip install 

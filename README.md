@@ -1,8 +1,8 @@
-WebSAFE
+# WebSAFE
 =======
 InaSAFE for the web
 
-Installation
+# Installation
 ============
 Download Vagrant:
     % http://downloads.vagrantup.com/tags/v1.2.7
@@ -12,7 +12,7 @@ After downloading Vagrant, navigate to the root of this folder and run:
 
 ...and wait for a while...
 
-Running Tornado Server
+# Running Tornado Server
 ======================
 Just SSH to localhost:2222 with:
     % username: vagrant

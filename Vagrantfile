@@ -8,22 +8,18 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   module_path = ["puppet/modules"]
   config.vm.box = "precise64"
   config.vm.box_url = "http://files.vagrantup.com/precise64.box"
-
-  # Create a forwarded port mapping which allows access to a specific port
-  # within the machine from a port on the host machine. In the example below,
-  # accessing "localhost:5000" will access port 80 on the guest machine.
-  config.vm.network :forwarded_port, guest: 80, host: 8000
-  config.vm.network :forwarded_port, guest: 8080, host: 8080
-  # config.vm.network :hostonly, "172.16.0.41"
+  
+  # Try to access http://localhost:8000
+  config.vm.network :forwarded_port, guest: 5000, host: 8000, auto_correct: true
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
-  config.vm.network :private_network, ip: "192.168.33.10"
+  #config.vm.network :private_network, ip: "192.168.33.10"
 
   # Create a public network, which generally matched to bridged network.
   # Bridged networks make the machine appear as another physical device on
   # your network.
-  config.vm.network :public_network
+  #config.vm.network :public_network
 
   # If true, then any SSH connections made will enable agent forwarding.
   # Default value: false
@@ -34,11 +30,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
   # config.vm.synced_folder "../data", "/vagrant_data"
+  
+  #config.vm.define :web do |web_config|
+  #  web_config.vm.host_name = "web01.internal"
+  #  web_config.vm.network :hostonly, "192.168.0.100"
+  #end
 
   config.vm.provider :virtualbox do |vb|
     vb.gui = true
-  
-    # Use VBoxManage to customize the VM. For example to change memory:
     vb.customize ["modifyvm", :id, "--memory", "4096"]
   end
   

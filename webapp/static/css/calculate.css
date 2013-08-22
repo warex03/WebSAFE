@@ -1,0 +1,18 @@
+body{
+    margin:0;
+    padding:0;
+}
+.footer{
+    bottom:0;
+    position:fixed;
+    width:100%;
+}
+#tabs {
+    height: 80%;
+}
+#accordion_content, #accordion_content2 {
+    background: #ccc;
+}
+#map{ 
+    height: 80%;
+}

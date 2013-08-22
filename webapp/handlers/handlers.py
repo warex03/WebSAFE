@@ -8,16 +8,10 @@ class IndexHandler(tornado.web.RequestHandler):
 			"index.html",
 		)
         
-class NaulanHandler(tornado.web.RequestHandler):
+class CalculateHandler(tornado.web.RequestHandler):
 	def get(self):
 		self.render(
-			"naulanba.html", #"naulanba.html",
-		)
-
-class TestHandler(tornado.web.RequestHandler):
-	def get(self):
-		self.render(
-			"test.html",
+			"calculate.html",
 		)
         
 class KMLHandler(tornado.web.RequestHandler):

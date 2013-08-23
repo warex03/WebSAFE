@@ -22,7 +22,8 @@ class update {
 
 class inasafe {
   package {['python-pip', 'rsync', 'git', 'pep8', 'python-nose', 'python-coverage', 'python-sphinx',
-            'pyqt4-dev-tools', 'pyflakes', 'python-dev', 'python-gdal', 'curl']:
+            'pyqt4-dev-tools', 'pyflakes', 'python-dev', 'python-gdal', 'curl', 'libpq-dev',
+            'python-psycopg2']:
     ensure => present,
     provider => 'apt'
   }
@@ -30,6 +31,11 @@ class inasafe {
   package { ['tornado', 'numpy']:
     ensure  => installed,
     provider => pip
+  }
+  
+  exec { 'run main.py':
+    path => ['/bin', '/usr/bin'],
+    command => 'python /vagrant/webapp/main.py'
   }
 }
 

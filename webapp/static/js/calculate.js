@@ -1,12 +1,21 @@
 $(function() {
+    var hazard;
+    var exposure;
+    
     $( "#tabs" ).tabs();
-});
-
-$(function() {
-    $( "#accordion" ).accordion({
+    $("#accordion").accordion({
         collapsible: true,
         heightStyle: "content"
     });
+    
+    $("#hazard").change(function(){
+        hazard = $("#hazard").get(0).files[0];
+    });
+    
+    $("#exposure").change(function(){
+        exposure = $("#exposure").get(0).files[0];
+    });
+    
     //$('#accordion .ui-accordion-content').show();
 });
 

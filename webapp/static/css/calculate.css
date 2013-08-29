@@ -12,6 +12,7 @@ body{
 }
 #accordion_content, #accordion_content2 {
     background: #ccc;
+    height: 69%;
 }
 #map{ 
     height: 80%;

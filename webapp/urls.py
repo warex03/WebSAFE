@@ -1,4 +1,4 @@
-from handlers.handlers import IndexHandler, CalculateHandler, ResultHandler
+from handlers.handlers import IndexHandler, CalculateHandler
 from modules import NavbarModule
 
 import os.path
@@ -8,7 +8,6 @@ import tornado.web
 handlers = [
     (r"/", IndexHandler),
     (r"/calculate", CalculateHandler),
-    (r"/result", ResultHandler),    
 ]
 
 class Application(tornado.web.Application):

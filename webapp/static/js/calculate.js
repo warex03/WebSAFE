@@ -2,7 +2,7 @@ $(function() {
     var hazard;
     var exposure;
     
-    $( "#tabs" ).tabs();
+    $("#tabs").tabs();
     $("#accordion").accordion({
         collapsible: true,
         heightStyle: "content"
@@ -10,14 +10,25 @@ $(function() {
     
     $("#hazard").change(function(){
         hazard = $("#hazard").get(0).files[0];
+        console.log(hazard);
     });
     
     $("#exposure").change(function(){
         exposure = $("#exposure").get(0).files[0];
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            console.log(reader.readAsDataURL(exposure));
+            console.log(exposure);
+        };
+            console.log(reader.readAsDataURL(exposure));
     });
     
     $("#calculate")[0].onclick = function(){
         calculate(exposure, hazard);
+    };
+    
+    $("#reset")[0].onclick = function(){
+        
     };
 });
 
@@ -31,6 +42,7 @@ function mapInit() {
 function calculate(exposure, hazard){
     $.post("/calculate")
     .done(function(data){
+        $("#results_header").html('Results' + '');
         $("#results").html(data);
         $("#accordion").accordion("option", "active", 1);
     })

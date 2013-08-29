@@ -7,13 +7,21 @@ class IndexHandler(tornado.web.RequestHandler):
 		self.render(
 			"index.html",
 		)
-        
+ 
+class ResultHandler(tornado.web.RequestHandler):
+    def post(self):
+        self.write("ASD")
+ 
 class CalculateHandler(tornado.web.RequestHandler):
-	def get(self):
-		self.render(
-			"calculate.html",
-		)
         
+    def post(self):
+        exposure = self.get_argument("exposure", "No Exposure sent!")
+        hazard = self.get_argument("hazard", "No Hazard sent!")
+        self.render("result.html", data="datum")
+        
+    def get(self):
+		self.render( "calculate.html")
+
 class KMLHandler(tornado.web.RequestHandler):
     def get(self):
         conn = httplib.HTTPConnection("mahar.pscigrid.gov.ph")

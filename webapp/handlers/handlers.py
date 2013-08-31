@@ -14,7 +14,6 @@ class CalculateHandler(tornado.web.RequestHandler):
         
     def post(self):
         #exposure = self.get_argument("exposure", "No Exposure sent!")
-        
         hazard = read_layer("/vagrant/webapp/data/flood.shp")
         exposure = read_layer("/vagrant/webapp/data/buildings.shp")
         #hazard = self.get_argument("hazard", "No Hazard sent!")

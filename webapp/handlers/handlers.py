@@ -30,9 +30,13 @@ class CalculateHandler(tornado.web.RequestHandler):
             layers=[exposure, hazard],
             impact_fcn=impact_function
         )
-        #filename = glob.glob('*.shp')[0]
-        #layer_file = str(os.path.join(layer_path, filename))
-        #hazard = read_layer(hazard_filename)
+        
+        output_filename = "/vagrant/webapp/data/impact.KML"
+        output = open(output_filename, "w+")
+        print str(impact)
+        #call(['ogr2ogr', '-f', 'KML', output_filename, impact])
+        output.close()
+        
         result = impact.keywords["impact_summary"]
         self.render("result.html", result=result)
         

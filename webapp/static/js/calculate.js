@@ -51,7 +51,8 @@ function mapInit() {
 function calculate(exposure, hazard){
     $.post("/calculate")
     .done(function(data){
-        $("#results").html(data);
+        var pdf_button = '<button class="btn btn-primary btn-xs pull-left" id="view_pdf"> View PDF </button>';
+        $("#results").html(pdf_button + data);
     })
     .fail(function(data){
         alert("POST request to '/calculate' failed!");

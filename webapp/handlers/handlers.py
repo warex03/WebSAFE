@@ -1,5 +1,5 @@
 import tornado.web
-import json, httplib, urllib2
+import json, httplib, urllib2, shutil
 
 from safe.api import read_layer, calculate_impact
 from safe.impact_functions.inundation.flood_OSM_building_impact \
@@ -31,24 +31,28 @@ class CalculateHandler(tornado.web.RequestHandler):
             impact_fcn=impact_function
         )
         
-        output_filename = "/vagrant/webapp/data/impact.KML"
-        output = open(output_filename, "w+")
-        print str(impact)
-        #call(['ogr2ogr', '-f', 'KML', output_filename, impact])
-        output.close()
+        output = '/vagrant/webapp/data/impact.json'
+        #call(['ogr2ogr', '-f', 'KML', output, impact.filename])
+        call(['ogr2ogr', '-f', 'GeoJSON', output, impact.filename])
         
         result = impact.keywords["impact_summary"]
-        self.render("result.html", result=result)
+        self.render("result.html", result=result, kml=output)
         
     def get(self):
 		self.render( "calculate.html")
-
-class KMLHandler(tornado.web.RequestHandler):
+        
+class ImpactKMLHandler(tornado.web.RequestHandler):
     def get(self):
-        conn = httplib.HTTPConnection("mahar.pscigrid.gov.ph")
-        conn.request("GET", "/static/kmz/rain-forecast.KML")
-        res = conn.getresponse()
-        data = res.read()
-        conn.close()
+        data = open('/vagrant/webapp/data/impact.KML')
+        f = data.read()
         self.content_type = 'soap/xml'
-        self.write(data)
+        self.write(f)
+        data.close()
+        
+class ImpactJSONHandler(tornado.web.RequestHandler):
+    def get(self):
+        data = open('/vagrant/webapp/data/impact.json')
+        f = data.read()
+        self.content_type = 'application/json'
+        self.write(f)
+        data.close()

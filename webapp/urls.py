@@ -1,4 +1,5 @@
-from handlers.handlers import IndexHandler, CalculateHandler
+from handlers.handlers import IndexHandler, CalculateHandler, \
+    ImpactKMLHandler, ImpactJSONHandler
 from modules import NavbarModule
 
 import os.path
@@ -8,6 +9,8 @@ import tornado.web
 handlers = [
     (r"/", IndexHandler),
     (r"/calculate", CalculateHandler),
+    (r"/impact", ImpactKMLHandler),
+    (r"/json", ImpactJSONHandler),
 ]
 
 class Application(tornado.web.Application):

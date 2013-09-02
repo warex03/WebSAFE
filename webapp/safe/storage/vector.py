@@ -1,22 +1,3 @@
-"""**Vector Module**
-
-.. tip:: Provides functionality for manipulation of vector data. The data can
-   be in-memory or file based.
-
-Resources for understanding vector data formats and the OGR library:
-Treatise on vector data model: http://www.esri.com/news/arcuser/0401/topo.html
-OGR C++ reference: http://www.gdal.org/ogr
-
-
-"""
-
-__author__ = 'Ole Nielsen <ole.moller.nielsen@gmail.com>'
-__revision__ = '$Format:%H$'
-__date__ = '01/11/2010'
-__license__ = "GPL"
-__copyright__ = 'Copyright 2012, Australia Indonesia Facility for '
-__copyright__ += 'Disaster Reduction'
-
 import os
 import sys
 import numpy

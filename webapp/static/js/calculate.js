@@ -55,20 +55,31 @@ function calculate(exposure, hazard){
     .done(function(data){
         var pdf_button = '<button class="btn btn-primary btn-xs pull-left" id="view_pdf"> View PDF </button>';
         $("#results").html(pdf_button + data);
-        /*
+        
         var kmlLayer = new L.KML("/impact", {async: true});
         kmlLayer.on("loaded", function(e) { 
             map.fitBounds(e.target.getBounds());
-        });
-                                                
+        });                                   
         map.addLayer(kmlLayer);
-        */
+        
+        $("#view_pdf")[0].onclick = function(){
+            var doc = new jsPDF();
+            doc.text(20, 20, 'Hello world!');
+            doc.text(20, 30, 'This is client-side Javascript, pumping out a PDF.');
+            doc.addPage();
+            doc.text(20, 20, 'Do you like that?');
+	
+            // Output as Data URI
+            doc.output('datauri');
+        };
+        /*
         $.getJSON('/json', function(geojsonFeature){
             var myLayer = L.geoJson().addTo(map);
             myLayer.addData(geojsonFeature);
             // Zooms map to geoJSON layer's bounds
             map.fitBounds(myLayer.getBounds());
 		});
+        */
     })
     .fail(function(data){
         alert("POST request to '/calculate' failed!");

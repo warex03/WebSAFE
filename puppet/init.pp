@@ -28,7 +28,7 @@ class inasafe {
     provider => 'apt'
   }
   
-  package { ['tornado', 'numpy']:
+  package { ['tornado', 'numpy', 'pisa', 'reportlab', 'html5lib', ]:
     ensure  => installed,
     provider => pip
   }

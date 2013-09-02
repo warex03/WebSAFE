@@ -1,5 +1,5 @@
 import tornado.web
-import json, httplib, urllib2, shutil
+import json, httplib, urllib2
 
 from safe.api import read_layer, calculate_impact
 from safe.impact_functions.inundation.flood_OSM_building_impact \
@@ -31,12 +31,14 @@ class CalculateHandler(tornado.web.RequestHandler):
             impact_fcn=impact_function
         )
         
-        output = '/vagrant/webapp/data/impact.json'
-        #call(['ogr2ogr', '-f', 'KML', output, impact.filename])
-        call(['ogr2ogr', '-f', 'GeoJSON', output, impact.filename])
+        output = '/vagrant/webapp/data/impact.KML'
+        call(['ogr2ogr', '-f', 'KML', output, impact.filename])
+        #call(['ogr2ogr', '-f', 'GeoJSON', output, impact.filename])
+        print impact.keywords['legend_title']
+        print impact.style_info
         
         result = impact.keywords["impact_summary"]
-        self.render("result.html", result=result, kml=output)
+        self.render("result.html", result=result)
         
     def get(self):
 		self.render( "calculate.html")
@@ -56,3 +58,12 @@ class ImpactJSONHandler(tornado.web.RequestHandler):
         self.content_type = 'application/json'
         self.write(f)
         data.close()
+        
+class ImpactPDFHandler(tornado.web.RequestHandler):
+    def get(self):
+        data = open('/vagrant/webapp/data/impact.pdf')
+        f = data.read()
+        self.content_type = 'application/pdf'
+        self.write(f)
+        data.close()
+        

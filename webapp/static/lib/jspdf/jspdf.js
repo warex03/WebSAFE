@@ -127,10 +127,6 @@ var jsPDF = function(){
 		out('endobj');
 	}
 	
-	var putImages = function() {
-		// TODO
-	}
-	
 	var putResourceDictionary = function() {
 		out('/ProcSet [/PDF /Text /ImageB /ImageC /ImageI]');
 		out('/Font <<');
@@ -142,12 +138,6 @@ var jsPDF = function(){
 		putXobjectDict();
 		out('>>');
 	}
-	
-	var putXobjectDict = function() {
-		// TODO
-		// Loop through images
-	}
-	
 	
 	var putInfo = function() {
 		out('/Producer (jsPDF ' + version + ')');

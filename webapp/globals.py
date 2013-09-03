@@ -4,7 +4,8 @@ class Globals():
              'About': '#about',
              'Contact': '#contact',
              }
-    tools = {'Calculator': '/calculate',
-             'View Hazard Maps': '#',
-             'View Layers': '#',
+    tools = {'Impact Calculator': '/calculate',
+             'View Hazard Layers': '/hazard',
+             'View Exposure Layers': '/exposure',
+             'View Impact Layers': '/impact',
             }

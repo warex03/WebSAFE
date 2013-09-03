@@ -15,6 +15,11 @@ class update {
     before => Exec['apt-update']
   }
   
+  exec {'add-postgresql':
+    command => '/usr/bin/add-apt-repository ppa:pitti/postgresql -y',
+    before => Exec['apt-update']
+  }
+  
   exec {'apt-update':
     command => '/usr/bin/apt-get update'
   }
@@ -23,25 +28,24 @@ class update {
 class inasafe {
   package {['python-pip', 'rsync', 'git', 'pep8', 'python-nose', 'python-coverage', 'python-sphinx',
             'pyqt4-dev-tools', 'pyflakes', 'python-dev', 'python-gdal', 'curl', 'libpq-dev',
-            'python-psycopg2', 'gdal-bin',]:
+            'python-psycopg2', 'gdal-bin', 'postgresql-9.2']:
     ensure => present,
     provider => 'apt'
   }
   
-  package { ['tornado', 'numpy', 'pisa', 'reportlab', 'html5lib', ]:
+  package { ['tornado', 'numpy', 'pisa', 'reportlab', 'html5lib', 'sqlalchemy',]:
     ensure  => installed,
     provider => pip
   }
   
-  exec { 'run main.py':
-    path => ['/bin', '/usr/bin'],
-    command => 'python /vagrant/webapp/main.py'
-  }
+  #exec { 'run main.py':
+  #  path => ['/bin', '/usr/bin'],
+  #  command => 'python /vagrant/webapp/main.py'
+  #}
 }
 
 #class {'update':}
 class {'inasafe':}
 
-#sudo pip install 
 #cloud-sptheme 
 #python-nosexcover

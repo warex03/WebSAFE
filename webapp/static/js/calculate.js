@@ -50,36 +50,67 @@ function mapInit() {
     L.tileLayer(gmapsURL, {maxZoom: 18, minZoom: 4, attribution: gmapsAttrib}).addTo(map);
 }
 
+function onEachFeature(feature, layer) {
+    /*
+    $.getJSON('/impactstyle', function(data) {
+        $.each(data, function(key, val) {
+            items.push('<li id="' + key + '">' + val + '</li>');
+        });
+    });
+    */
+    if (feature.properties && feature.properties.INUNDATED) {
+        //layer.
+    }
+}
+
 function calculate(exposure, hazard){
     $.post("/calculate")
     .done(function(data){
         var pdf_button = '<button class="btn btn-primary btn-xs pull-left" id="view_pdf"> View PDF </button>';
         $("#results").html(pdf_button + data);
-        
+        /*
         var kmlLayer = new L.KML("/impact", {async: true});
         kmlLayer.on("loaded", function(e) { 
             map.fitBounds(e.target.getBounds());
         });                                   
         map.addLayer(kmlLayer);
-        
+        */
         $("#view_pdf")[0].onclick = function(){
             var doc = new jsPDF();
-            doc.text(20, 20, 'Hello world!');
-            doc.text(20, 30, 'This is client-side Javascript, pumping out a PDF.');
-            doc.addPage();
-            doc.text(20, 20, 'Do you like that?');
-	
-            // Output as Data URI
-            doc.output('datauri');
+            specialElementHandlers = {
+                '#result': function(element, renderer){
+                    return true
+                }
+            }
+            
+            doc.fromHTML($('#result').get(0), 10, 10, {
+                'width': 1000, 'elementHandlers': specialElementHandlers
+            });
+            
+            //doc.text(10,10,data)
+            doc.output('dataurlnewwindow');
         };
-        /*
+        
         $.getJSON('/json', function(geojsonFeature){
-            var myLayer = L.geoJson().addTo(map);
-            myLayer.addData(geojsonFeature);
+            /*
+            var myLayer = L.geoJson(geojsonFeature, {
+                 onEachFeature: onEachFeature
+            }).addTo(map);
+            */
+            var myLayer = L.geoJson(geojsonFeature, {
+                style: function(feature) {
+                    switch (feature.properties.INUNDATED) {
+                        case 0: return {color: "#1EFC7C"};
+                        case 1: return {color: "#F31A1C"};
+                    }
+                }
+            }).addTo(map);
+            
+            //myLayer.addData(geojsonFeature);
             // Zooms map to geoJSON layer's bounds
             map.fitBounds(myLayer.getBounds());
 		});
-        */
+        
     })
     .fail(function(data){
         alert("POST request to '/calculate' failed!");

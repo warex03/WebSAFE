@@ -25,20 +25,25 @@ class CalculateHandler(tornado.web.RequestHandler):
         hazard.keywords['category'] = 'hazard'
         hazard.keywords['subcategory'] = 'flood'
     
-        # run analisys
-        impact = calculate_impact(
-            layers=[exposure, hazard],
-            impact_fcn=impact_function
-        )
+        try:
+            # run analisys
+            impact = calculate_impact(
+                layers=[exposure, hazard],
+                impact_fcn=impact_function
+            )
+            output_style = '/vagrant/webapp/data/impact' + '_style.json'
+            with open(output_style, 'w') as style_json:
+                json.dump(impact.style_info, style_json)
+            output = '/vagrant/webapp/data/impact.json'
+            #call(['ogr2ogr', '-f', 'KML', output, impact.filename])
+            #call(['ogr2ogr', '-f', 'KML', output, '/vagrant/webapp/data/impact.shp'])
+            call(['ogr2ogr', '-f', 'GeoJSON', output, '/vagrant/webapp/data/impact.shp'])
         
-        output = '/vagrant/webapp/data/impact.KML'
-        call(['ogr2ogr', '-f', 'KML', output, impact.filename])
-        #call(['ogr2ogr', '-f', 'GeoJSON', output, impact.filename])
-        print impact.keywords['legend_title']
-        print impact.style_info
-        
-        result = impact.keywords["impact_summary"]
-        self.render("result.html", result=result)
+            result = impact.keywords["impact_summary"]
+        except:
+            raise
+        else:
+            self.render("result.html", result=result)
         
     def get(self):
 		self.render( "calculate.html")
@@ -54,6 +59,14 @@ class ImpactKMLHandler(tornado.web.RequestHandler):
 class ImpactJSONHandler(tornado.web.RequestHandler):
     def get(self):
         data = open('/vagrant/webapp/data/impact.json')
+        f = data.read()
+        self.content_type = 'application/json'
+        self.write(f)
+        data.close()
+        
+class ImpactStyleHandler(tornado.web.RequestHandler):
+    def get(self):
+        data = open('/vagrant/webapp/data/impact_style.json')
         f = data.read()
         self.content_type = 'application/json'
         self.write(f)

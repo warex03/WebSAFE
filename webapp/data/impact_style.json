@@ -1,0 +1,1 @@
+{"style_type": "categorizedSymbol", "target_field": "INUNDATED", "style_classes": [{"colour": "#1EFC7C", "size": 1, "transparency": 0, "value": 0, "label": "Not Inundated"}, {"colour": "#F31A1C", "size": 1, "transparency": 0, "value": 1, "label": "Inundated"}]}

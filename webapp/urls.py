@@ -1,5 +1,6 @@
 from handlers.handlers import IndexHandler, CalculateHandler, \
-    ImpactKMLHandler, ImpactJSONHandler, ImpactPDFHandler
+    ImpactKMLHandler, ImpactJSONHandler, ImpactPDFHandler, \
+    ImpactStyleHandler
 from modules import NavbarModule
 
 import os.path
@@ -10,6 +11,7 @@ handlers = [
     (r"/", IndexHandler),
     (r"/calculate", CalculateHandler),
     (r"/impact", ImpactKMLHandler),
+    (r"/impactstyle", ImpactStyleHandler),
     (r"/json", ImpactJSONHandler),
     (r"/pdf", ImpactPDFHandler),
 ]

@@ -52,9 +52,23 @@ function mapInit() {
 
 function fileTreeInit(data){
     $("#tabs-1").fileTree({ root: data, script: "/filetree" }, function(file) {
-        //console.log(file);
-        //alert(file);
+        var type = "hazard"
+        $.post("/layers", {filename: file, layer_type: type})
+        .done(function(data){
+            console.log(data);
+            initializeFields(type);
+            $.each(data, function(key, val){
+                $("#"+type+"_"+key).val(val);
+            });
+        })
     });
+}
+
+function initializeFields(type){
+    $("#"+type+"_"+"name").val("");
+    $("#"+type+"_"+"title").val("");
+    $("#"+type+"_"+"category").val("");
+    $("#"+type+"_"+"subcategory").val("");
 }
 
 function calculate(exposure, hazard){

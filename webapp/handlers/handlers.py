@@ -1,11 +1,11 @@
 import tornado.web
 import json, httplib, urllib2, glob, os
 from Settings import ROOT, DATA_PATH
+from subprocess import call
 
 from safe.api import read_layer, calculate_impact
 from safe.impact_functions.inundation.flood_OSM_building_impact \
     import FloodBuildingImpactFunction
-from subprocess import call
 
 #from utilities import setupPrinter
 
@@ -17,15 +17,18 @@ class CalculateHandler(tornado.web.RequestHandler):
         
     def post(self):
         purpose = self.get_argument("purpose", "None")
-        #if(purpose=="pdf"):
+        if "pdf" in purpose:
+            print purpose
             #setupPrinter("/vagrant/webapp/data/impact.pdf")
-        
-        #exposure = self.get_argument("exposure", "No Exposure sent!")
+        elif "calculate" in purpose:
+            print purpose
+            #exposure = self.get_argument("exposure", "No Exposure sent!")
+            #hazard = self.get_argument("hazard", "No Hazard sent!")
+            
         hazard_filename = os.path.join(DATA_PATH, 'hazard', 'flood.shp')
         exposure_filename = os.path.join(DATA_PATH, 'exposure', 'buildings.shp')
         hazard = read_layer(hazard_filename)
         exposure = read_layer(exposure_filename)
-        #hazard = self.get_argument("hazard", "No Hazard sent!")
         impact_function = FloodBuildingImpactFunction
 
         # assign the required keywords for inasafe calculations
@@ -47,7 +50,9 @@ class CalculateHandler(tornado.web.RequestHandler):
             output = os.path.join(DATA_PATH, 'impact', 'impact.json')
             #call(['ogr2ogr', '-f', 'KML', output, impact.filename])
             #call(['ogr2ogr', '-f', 'KML', output, '/vagrant/webapp/data/impact.shp'])
-            call(['ogr2ogr', '-f', 'GeoJSON', output, impact.filename])
+            
+            #call(['ogr2ogr', '-f', 'GeoJSON', output, impact.filename])
+            call(['ogr2ogr', '-f', 'GeoJSON', output, os.path.join(DATA_PATH, 'test', 'impact.shp')])
         
             result = impact.keywords["impact_summary"]
         except:
@@ -117,7 +122,8 @@ class FileTreeHandler(tornado.web.RequestHandler):
                 else:
                     if not os.path.isdir(ff):
                         ext=os.path.splitext(f)[1][1:] # get .ext and remove dot
-                        to_return.append('<li class="file ext_%s"><a href="#" rel="%s">%s</a></li>' % (ext,ff,f))
+                        if "shp" in ext:
+                            to_return.append('<li class="file ext_%s"><a href="#" rel="%s">%s</a></li>' % (ext,ff,f))
         except Exception,e:
             raise e
             #to_return.append('Could not load directory: %s' % str(e))

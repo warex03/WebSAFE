@@ -18,5 +18,6 @@ body{
     height: 80%;
 }
 #tabs-1 {
-    //overflow: scroll;
+    height: 92%;
+    overflow: scroll;
 }

@@ -52,8 +52,8 @@ function mapInit() {
 
 function fileTreeInit(data){
     $("#tabs-1").fileTree({ root: data, script: "/filetree" }, function(file) {
-        console.log(file);
-        alert(file);
+        //console.log(file);
+        //alert(file);
     });
 }
 

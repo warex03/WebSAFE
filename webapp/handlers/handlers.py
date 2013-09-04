@@ -110,11 +110,14 @@ class FileTreeHandler(tornado.web.RequestHandler):
                 ff=os.path.join(dir,f)
                 if os.path.isdir(ff) and "exposure" in ff:
                     to_return.append('<li class="directory collapsed"><a href="#" rel="%s/">%s</a></li>' % (ff,f))
+                    
                 elif os.path.isdir(ff) and "hazard" in ff:
                     to_return.append('<li class="directory collapsed"><a href="#" rel="%s/">%s</a></li>' % (ff,f))
+                    
                 else:
-                    ext=os.path.splitext(f)[1][1:] # get .ext and remove dot
-                    to_return.append('<li class="file ext_%s"><a href="#" rel="%s">%s</a></li>' % (ext,ff,f))
+                    if not os.path.isdir(ff):
+                        ext=os.path.splitext(f)[1][1:] # get .ext and remove dot
+                        to_return.append('<li class="file ext_%s"><a href="#" rel="%s">%s</a></li>' % (ext,ff,f))
         except Exception,e:
             raise e
             #to_return.append('Could not load directory: %s' % str(e))

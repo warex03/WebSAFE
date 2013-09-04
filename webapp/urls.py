@@ -1,6 +1,6 @@
 from handlers.handlers import IndexHandler, CalculateHandler, \
     ImpactKMLHandler, ImpactJSONHandler, ImpactPDFHandler, \
-    ImpactStyleHandler
+    ImpactStyleHandler, FileTreeHandler
 from modules import NavbarModule
 
 import os.path
@@ -14,6 +14,7 @@ handlers = [
     (r"/impactstyle", ImpactStyleHandler),
     (r"/json", ImpactJSONHandler),
     (r"/pdf", ImpactPDFHandler),
+    (r"/filetree", FileTreeHandler),
 ]
 
 class Application(tornado.web.Application):

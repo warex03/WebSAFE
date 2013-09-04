@@ -290,9 +290,9 @@ class FloodBuildingImpactFunction(FunctionProvider):
         impact_table = impact_summary
 
         # Create style
-        style_classes = [dict(label=tr('Not Inundated'), value=0,
+        style_classes = [dict(label=tr('Not Flooded'), value=0,
                               colour='#1EFC7C', transparency=0, size=1),
-                         dict(label=tr('Inundated'), value=1,
+                         dict(label=tr('Flooded'), value=1,
                               colour='#F31A1C', transparency=0, size=1)]
         style_info = dict(target_field=self.target_field,
                           style_classes=style_classes,
@@ -300,7 +300,7 @@ class FloodBuildingImpactFunction(FunctionProvider):
 
         # For printing map purpose
         map_title = tr('Buildings inundated')
-        legend_units = tr('(inundated or not inundated)')
+        legend_units = tr('(flooded or not flooded)')
         legend_title = tr('Structure inundated status')
 
         # Create vector layer and return

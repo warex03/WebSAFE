@@ -7,9 +7,10 @@
     
         <!-- Bootstrap -->
         <link href="{{ static_url("lib/bootstrap/css/bootstrap.min.css") }}" rel="stylesheet" media="screen">
-        <link href="{{ static_url("lib/leaflet/leaflet.css") }}" rel="stylesheet" media="screen">
-        <link href="{{ static_url("css/calculate.css") }}" rel="stylesheet" media="screen">
-        <link href="{{ static_url("css/jquery-ui.css") }}" rel="stylesheet" media="screen">
+        <link href="{{ static_url("lib/leaflet/leaflet.css") }}" rel="stylesheet">
+        <link href="{{ static_url("lib/jqueryFileTree/jqueryFileTree.css") }}" rel="stylesheet">
+        <link href="{{ static_url("css/calculate.css") }}" rel="stylesheet">
+        <link href="{{ static_url("css/jquery-ui.css") }}" rel="stylesheet">
         
     </head>
     
@@ -21,11 +22,7 @@
                     <li><a href="#tabs-1">Layers</a></li>
                     <li><a href="#tabs-2">Legend</a></li>
                 </ul>
-                <div id="tabs-1">
-                    <p>
-                        Under construction...
-                    </p>
-                </div>
+                <div id="tabs-1"></div>
                 <div id="tabs-2">
                     <p>
                         Under construction...
@@ -38,7 +35,8 @@
             <div id="accordion">
                 <h3>Impact Calculator</h3>
                 <div id="accordion_content">
-                    <center> <label> Hazard: </label> <input type="file" id="hazard"><br> </center>
+                    <center>Hazard</center>
+                    Layer <input type="text" style="width:87%; font-size: 10px;"><br>
                     Title <input type="text" style="width:90%; font-size: 10px;"><br>
                     Category <input type="text" style="width:79%; font-size: 10px;"><br>
                     Subcategory 
@@ -48,10 +46,10 @@
                         <option>flood[m]</option>
                         <option>flood[wet/dry]</option>
                         <option>flood[feet]</option>
-                        <option>volcano</option>
                     </select><br><br>
                     
-                    <center> <label> Exposure: </label> <input type="file" id="exposure"> <br> </center>
+                    <center>Exposure</center>
+                    Layer <input type="text" style="width:87%; font-size: 10px;"><br>
                     Title <input type="text" style="width:90%; font-size: 10px;"><br>
                     Category <input type="text" style="width:79%; font-size: 10px;"><br>
                     Subcategory 
@@ -95,6 +93,7 @@
         <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
         <script src="{{ static_url("js/jquery-1.9.1.js") }}"></script>
         <script src="{{ static_url("js/jquery-ui.js") }}"></script>
+        <script src="{{ static_url("lib/jqueryFileTree/jqueryFileTree.js") }}"></script>
         <script src="{{ static_url("lib/jspdf/jspdf.min.js") }}"></script>
         <script src="{{ static_url("lib/jspdf/jspdf.plugin.from_html.js") }}"></script>
         <script src="{{ static_url("lib/jspdf/libs/base64.js") }}"></script>
@@ -107,5 +106,9 @@
         <script src="{{ static_url("lib/bootstrap/js/bootstrap.min.js") }}"></script>
         <script src="{{ static_url("lib/leaflet/leaflet.js") }}"></script>
         <script src="{{ static_url("lib/leaflet-plugins/layer/vector/KML.js") }}"></script>
+        
+        <script>
+            fileTreeInit("{{ data_path }}");
+        </script>
     </body>
 </html>

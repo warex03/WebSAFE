@@ -1,10 +1,13 @@
 import tornado.web
-import json, httplib, urllib2
+import json, httplib, urllib2, glob, os
+from Settings import ROOT, DATA_PATH
 
 from safe.api import read_layer, calculate_impact
 from safe.impact_functions.inundation.flood_OSM_building_impact \
     import FloodBuildingImpactFunction
 from subprocess import call
+
+#from utilities import setupPrinter
 
 class IndexHandler(tornado.web.RequestHandler):
 	def get(self):
@@ -13,9 +16,15 @@ class IndexHandler(tornado.web.RequestHandler):
 class CalculateHandler(tornado.web.RequestHandler):
         
     def post(self):
+        purpose = self.get_argument("purpose", "None")
+        #if(purpose=="pdf"):
+            #setupPrinter("/vagrant/webapp/data/impact.pdf")
+        
         #exposure = self.get_argument("exposure", "No Exposure sent!")
-        hazard = read_layer("/vagrant/webapp/data/flood.shp")
-        exposure = read_layer("/vagrant/webapp/data/buildings.shp")
+        hazard_filename = os.path.join(DATA_PATH, 'hazard', 'flood.shp')
+        exposure_filename = os.path.join(DATA_PATH, 'exposure', 'buildings.shp')
+        hazard = read_layer(hazard_filename)
+        exposure = read_layer(exposure_filename)
         #hazard = self.get_argument("hazard", "No Hazard sent!")
         impact_function = FloodBuildingImpactFunction
 
@@ -24,20 +33,21 @@ class CalculateHandler(tornado.web.RequestHandler):
         exposure.keywords['subcategory'] = 'structure'
         hazard.keywords['category'] = 'hazard'
         hazard.keywords['subcategory'] = 'flood'
-    
+
         try:
             # run analisys
             impact = calculate_impact(
                 layers=[exposure, hazard],
                 impact_fcn=impact_function
             )
-            output_style = '/vagrant/webapp/data/impact' + '_style.json'
+            output_style = os.path.join(DATA_PATH, 'impact', 'impact_style.json')
+            print output_style
             with open(output_style, 'w') as style_json:
                 json.dump(impact.style_info, style_json)
-            output = '/vagrant/webapp/data/impact.json'
+            output = os.path.join(DATA_PATH, 'impact', 'impact.json')
             #call(['ogr2ogr', '-f', 'KML', output, impact.filename])
             #call(['ogr2ogr', '-f', 'KML', output, '/vagrant/webapp/data/impact.shp'])
-            call(['ogr2ogr', '-f', 'GeoJSON', output, '/vagrant/webapp/data/impact.shp'])
+            call(['ogr2ogr', '-f', 'GeoJSON', output, impact.filename])
         
             result = impact.keywords["impact_summary"]
         except:
@@ -46,11 +56,22 @@ class CalculateHandler(tornado.web.RequestHandler):
             self.render("result.html", result=result)
         
     def get(self):
-		self.render( "calculate.html")
+        try:
+            exposure_path = os.path.join(DATA_PATH, 'exposure')
+            os.chdir(exposure_path)
+            exposure_data = glob.glob('*.shp')
+            
+            hazard_path = os.path.join(DATA_PATH, 'hazard')
+            os.chdir(hazard_path)
+            hazard_data = glob.glob('*.shp')
+        except:
+            raise
+        else:
+            self.render( "calculate.html", data_path=DATA_PATH)
         
 class ImpactKMLHandler(tornado.web.RequestHandler):
     def get(self):
-        data = open('/vagrant/webapp/data/impact.KML')
+        data = open('/vagrant/webapp/data/impact/impact.KML')
         f = data.read()
         self.content_type = 'soap/xml'
         self.write(f)
@@ -58,7 +79,7 @@ class ImpactKMLHandler(tornado.web.RequestHandler):
         
 class ImpactJSONHandler(tornado.web.RequestHandler):
     def get(self):
-        data = open('/vagrant/webapp/data/impact.json')
+        data = open('/vagrant/webapp/data/impact/impact.json')
         f = data.read()
         self.content_type = 'application/json'
         self.write(f)
@@ -66,7 +87,7 @@ class ImpactJSONHandler(tornado.web.RequestHandler):
         
 class ImpactStyleHandler(tornado.web.RequestHandler):
     def get(self):
-        data = open('/vagrant/webapp/data/impact_style.json')
+        data = open('/vagrant/webapp/data/impact/impact_style.json')
         f = data.read()
         self.content_type = 'application/json'
         self.write(f)
@@ -74,9 +95,30 @@ class ImpactStyleHandler(tornado.web.RequestHandler):
         
 class ImpactPDFHandler(tornado.web.RequestHandler):
     def get(self):
-        data = open('/vagrant/webapp/data/impact.pdf')
+        data = open('/vagrant/webapp/data/pdf/impact.pdf')
         f = data.read()
         self.content_type = 'application/pdf'
         self.write(f)
         data.close()
+        
+class FileTreeHandler(tornado.web.RequestHandler):
+    def post(self):
+        to_return = ['<ul class="jqueryFileTree" style="display: none;">']
+        try:
+            dir = self.get_argument("dir", ROOT)
+            for f in os.listdir(dir):
+                ff=os.path.join(dir,f)
+                if os.path.isdir(ff) and "exposure" in ff:
+                    to_return.append('<li class="directory collapsed"><a href="#" rel="%s/">%s</a></li>' % (ff,f))
+                elif os.path.isdir(ff) and "hazard" in ff:
+                    to_return.append('<li class="directory collapsed"><a href="#" rel="%s/">%s</a></li>' % (ff,f))
+                else:
+                    ext=os.path.splitext(f)[1][1:] # get .ext and remove dot
+                    to_return.append('<li class="file ext_%s"><a href="#" rel="%s">%s</a></li>' % (ext,ff,f))
+        except Exception,e:
+            raise e
+            #to_return.append('Could not load directory: %s' % str(e))
+            
+        to_return.append('</ul>')
+        self.write(''.join(to_return))
         

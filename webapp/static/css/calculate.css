@@ -17,3 +17,6 @@ body{
 #map{ 
     height: 80%;
 }
+#tabs-1 {
+    //overflow: scroll;
+}

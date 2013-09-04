@@ -47,24 +47,18 @@ function mapInit() {
     map = L.map('map').setView([12.3, 122], 5);
     var gmapsAttrib = '&copy; <a href="http://www.google.com.ph/permissions/geoguidelines.html">Google Maps</a> contributors';
     var gmapsURL = 'http://mt1.google.com/vt/v=w2.106&x={x}&y={y}&z={z}';
-    L.tileLayer(gmapsURL, {maxZoom: 18, minZoom: 4, attribution: gmapsAttrib}).addTo(map);
+    L.tileLayer(gmapsURL, {maxZoom: 18, minZoom: 4, attribution: gmapsAttrib}).addTo(map); 
 }
 
-function onEachFeature(feature, layer) {
-    /*
-    $.getJSON('/impactstyle', function(data) {
-        $.each(data, function(key, val) {
-            items.push('<li id="' + key + '">' + val + '</li>');
-        });
+function fileTreeInit(data){
+    $("#tabs-1").fileTree({ root: data, script: "/filetree" }, function(file) {
+        console.log(file);
+        alert(file);
     });
-    */
-    if (feature.properties && feature.properties.INUNDATED) {
-        //layer.
-    }
 }
 
 function calculate(exposure, hazard){
-    $.post("/calculate")
+    $.post("/calculate", {purpose: "calculate"})
     .done(function(data){
         var pdf_button = '<button class="btn btn-primary btn-xs pull-left" id="view_pdf"> View PDF </button>';
         $("#results").html(pdf_button + data);
@@ -87,30 +81,23 @@ function calculate(exposure, hazard){
                 'width': 1000, 'elementHandlers': specialElementHandlers
             });
             
-            //doc.text(10,10,data)
             doc.output('dataurlnewwindow');
         };
         
-        $.getJSON('/json', function(geojsonFeature){
-            /*
-            var myLayer = L.geoJson(geojsonFeature, {
-                 onEachFeature: onEachFeature
-            }).addTo(map);
-            */
-            var myLayer = L.geoJson(geojsonFeature, {
-                style: function(feature) {
-                    switch (feature.properties.INUNDATED) {
-                        case 0: return {color: "#1EFC7C"};
-                        case 1: return {color: "#F31A1C"};
+        $.getJSON('/impactstyle')
+        .done(function(style_info){
+            //AJAX call that gets the GeoJson of the impact layer
+            $.getJSON('/json', function(geojsonFeature){
+                var myLayer = L.geoJson(geojsonFeature, {
+                    style: function(feature){
+                        var target_field = style_info.target_field;
+                        var target_property = feature.properties[target_field];
+                        return {color: style_info.style_classes[target_property].colour};
                     }
-                }
-            }).addTo(map);
-            
-            //myLayer.addData(geojsonFeature);
-            // Zooms map to geoJSON layer's bounds
-            map.fitBounds(myLayer.getBounds());
-		});
-        
+                }).addTo(map);
+                map.fitBounds(myLayer.getBounds());
+            });
+        });
     })
     .fail(function(data){
         alert("POST request to '/calculate' failed!");

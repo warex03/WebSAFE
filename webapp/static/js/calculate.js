@@ -41,6 +41,7 @@ function mapInit() {
 function fileTreeInit(data){
     $("#tabs-1").fileTree({ root: data, script: "/filetree" }, function(file) {
         //TODO: build a wrap around that will assign the correct type value
+        console.log($(this));
         var type = "hazard"
         
         

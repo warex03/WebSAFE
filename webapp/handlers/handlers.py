@@ -110,7 +110,7 @@ class FileTreeHandler(tornado.web.RequestHandler):
     def post(self):
         to_return = ['<ul class="jqueryFileTree" style="display: none;">']
         try:
-            dir = self.get_argument("dir", ROOT)
+            dir = self.get_argument("dir", DATA_PATH)
             for f in os.listdir(dir):
                 ff=os.path.join(dir,f)
                 if os.path.isdir(ff) and "exposure" in ff:

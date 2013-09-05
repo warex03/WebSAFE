@@ -5,6 +5,8 @@ from subprocess import call
 
 from safe.api import read_layer
 
+'''This is the handler for the API call that returns the json metadata of a layer 
+'''
 class LayerHandler(tornado.web.RequestHandler): 
     def post(self):
         layer_type = self.get_argument("layer_type", "None")

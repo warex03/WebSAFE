@@ -10,21 +10,6 @@ $(function() {
         heightStyle: "content"
     });
     
-    $("#hazard").change(function(){
-        hazard = $("#hazard").get(0).files[0];
-        console.log(hazard);
-    });
-    
-    $("#exposure").change(function(){
-        exposure = $("#exposure").get(0).files[0];
-        var reader = new FileReader();
-        reader.onload = function(e) {
-            console.log(reader.readAsDataURL(exposure));
-            console.log(exposure);
-        };
-            console.log(reader.readAsDataURL(exposure));
-    });
-    
     $("#calculate")[0].onclick = function(){
         //Fix the <br> tags with correct css please
         var msg = 'Please wait while the system is calculating the results...'
@@ -39,6 +24,8 @@ $(function() {
     $("#reset")[0].onclick = function(){
         var br = '<br><br><br><br><br><br><br><br>';
         var msg = 'Please input the necessary data(i.e. exposure, hazard layers).';
+        initializeFields("exposure");
+        initializeFields("hazard");
         $("#results").html(br + msg);
     };
 });
@@ -50,13 +37,17 @@ function mapInit() {
     L.tileLayer(gmapsURL, {maxZoom: 18, minZoom: 4, attribution: gmapsAttrib}).addTo(map); 
 }
 
+//This function initializes the filetree but also listens to events related to that file tree
 function fileTreeInit(data){
     $("#tabs-1").fileTree({ root: data, script: "/filetree" }, function(file) {
+        //TODO: build a wrap around that will assign the correct type value
         var type = "hazard"
+        
+        
         $.post("/layers", {filename: file, layer_type: type})
         .done(function(data){
-            console.log(data);
             initializeFields(type);
+            $("#"+type+"_"+"filename").val(file);
             $.each(data, function(key, val){
                 $("#"+type+"_"+key).val(val);
             });
@@ -64,7 +55,9 @@ function fileTreeInit(data){
     });
 }
 
+//This function resets the attribute fields of the "type" layer in the layers info sidebar
 function initializeFields(type){
+    $("#"+type+"_"+"filename").val("");
     $("#"+type+"_"+"name").val("");
     $("#"+type+"_"+"title").val("");
     $("#"+type+"_"+"category").val("");
@@ -74,7 +67,7 @@ function initializeFields(type){
 function calculate(exposure, hazard){
     $.post("/calculate", {purpose: "calculate"})
     .done(function(data){
-        var pdf_button = '<button class="btn btn-primary btn-xs pull-left" id="view_pdf"> View PDF </button>';
+        var pdf_button = '<!--<button class="btn btn-primary btn-xs pull-left" id="view_pdf"> View PDF </button>-->';
         $("#results").html(pdf_button + data);
         /*
         var kmlLayer = new L.KML("/impact", {async: true});
@@ -82,7 +75,6 @@ function calculate(exposure, hazard){
             map.fitBounds(e.target.getBounds());
         });                                   
         map.addLayer(kmlLayer);
-        */
         $("#view_pdf")[0].onclick = function(){
             var doc = new jsPDF();
             specialElementHandlers = {
@@ -97,6 +89,7 @@ function calculate(exposure, hazard){
             
             doc.output('dataurlnewwindow');
         };
+        */
         
         $.getJSON('/impactstyle')
         .done(function(style_info){

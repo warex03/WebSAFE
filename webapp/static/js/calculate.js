@@ -40,10 +40,13 @@ function mapInit() {
 //This function initializes the filetree but also listens to events related to that file tree
 function fileTreeInit(data){
     $("#tabs-1").fileTree({ root: data, script: "/filetree" }, function(file) {
-        //TODO: build a wrap around that will assign the correct type value
-        console.log($(this));
-        var type = "hazard"
-        
+        var type;
+        //Note: this is a weak way of determining the layer type
+        if(file.indexOf("/hazard/") != -1){
+            type = "hazard";
+        }else if(file.indexOf("/exposure/") != -1){
+            type = "exposure";
+        }
         
         $.post("/layers", {filename: file, layer_type: type})
         .done(function(data){

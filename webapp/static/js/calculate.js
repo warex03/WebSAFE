@@ -11,13 +11,17 @@ $(function() {
     });
     
     $("#calculate")[0].onclick = function(){
+        //TODO: put here the validation of required keywords for InaSAFE calculation
+        hazard = $("#hazard_filename").val();
+        exposure = $("#exposure_filename").val();
+    
         //Fix the <br> tags with correct css please
-        var msg = 'Please wait while the system is calculating the results...'
+        var msg = 'Please wait while the system is calculating the results...';
         var br = '<br><br><br><br><br><br><br><br>';
         var progressbar = '<div class="progress progress-striped active">' +
             '<div class="progress-bar"  role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div></div>';
         $("#accordion").accordion("option", "active", 1);
-        $("#results").html(br +msg+ progressbar)
+        $("#results").html(br +msg+ progressbar);
         calculate(exposure, hazard);
     };
     
@@ -52,6 +56,7 @@ function fileTreeInit(data){
         .done(function(data){
             initializeFields(type);
             $("#"+type+"_"+"filename").val(file);
+            console.log($("#"+type+"_"+"filename").val());
             $.each(data, function(key, val){
                 $("#"+type+"_"+key).val(val);
             });
@@ -68,8 +73,10 @@ function initializeFields(type){
     $("#"+type+"_"+"subcategory").val("");
 }
 
+//Function that sends a post request containing the filenames of the hazard and exposure layers to the server
 function calculate(exposure, hazard){
-    $.post("/calculate", {purpose: "calculate"})
+    $.post("/calculate", 
+        {purpose: "calculate", hazard: hazard, exposure: exposure})
     .done(function(data){
         var pdf_button = '<!--<button class="btn btn-primary btn-xs pull-left" id="view_pdf"> View PDF </button>-->';
         $("#results").html(pdf_button + data);
@@ -110,7 +117,5 @@ function calculate(exposure, hazard){
             });
         });
     })
-    .fail(function(data){
-        alert("POST request to '/calculate' failed!");
-    });
+    .fail(function(data){ alert("POST request failed!"); });
 }

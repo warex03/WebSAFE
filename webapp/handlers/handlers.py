@@ -1,5 +1,5 @@
 import tornado.web
-import json, httplib, urllib2, glob, os
+import json, httplib, urllib2, glob, os, sys
 from Settings import ROOT, DATA_PATH
 from subprocess import call
 
@@ -21,44 +21,43 @@ class CalculateHandler(tornado.web.RequestHandler):
             print purpose
             #setupPrinter("/vagrant/webapp/data/impact.pdf")
         elif "calculate" in purpose:
-            print purpose
-            #exposure = self.get_argument("exposure", "No Exposure sent!")
-            #hazard = self.get_argument("hazard", "No Hazard sent!")
-            
-        hazard_filename = os.path.join(DATA_PATH, 'hazard', 'flood.shp')
-        exposure_filename = os.path.join(DATA_PATH, 'exposure', 'buildings.shp')
-        hazard = read_layer(hazard_filename)
-        exposure = read_layer(exposure_filename)
-        impact_function = FloodBuildingImpactFunction
+            encoding = sys.getfilesystemencoding()
+            exposure = self.get_argument("exposure", "No Exposure sent!")
+            hazard = self.get_argument("hazard", "No Hazard sent!")
+            #hazard = os.path.join(DATA_PATH, 'hazard', 'flood.shp')
+            #exposure = os.path.join(DATA_PATH, 'exposure', 'buildings.shp')
+            try:
+                hazard_layer = read_layer(hazard.encode(encoding))
+                exposure_layer = read_layer(exposure.encode(encoding))
+                impact_function = FloodBuildingImpactFunction
 
-        # assign the required keywords for inasafe calculations
-        exposure.keywords['category'] = 'exposure'
-        exposure.keywords['subcategory'] = 'structure'
-        hazard.keywords['category'] = 'hazard'
-        hazard.keywords['subcategory'] = 'flood'
-
-        try:
-            # run analisys
-            impact = calculate_impact(
-                layers=[exposure, hazard],
-                impact_fcn=impact_function
-            )
-            output_style = os.path.join(DATA_PATH, 'impact', 'impact_style.json')
-            print output_style
-            with open(output_style, 'w') as style_json:
-                json.dump(impact.style_info, style_json)
-            output = os.path.join(DATA_PATH, 'impact', 'impact.json')
-            #call(['ogr2ogr', '-f', 'KML', output, impact.filename])
-            #call(['ogr2ogr', '-f', 'KML', output, '/vagrant/webapp/data/impact.shp'])
+                # assign the required keywords for inasafe calculations
+                exposure_layer.keywords['category'] = 'exposure'
+                exposure_layer.keywords['subcategory'] = 'structure'
+                hazard_layer.keywords['category'] = 'hazard'
+                hazard_layer.keywords['subcategory'] = 'flood'
             
-            #call(['ogr2ogr', '-f', 'GeoJSON', output, impact.filename])
-            call(['ogr2ogr', '-f', 'GeoJSON', output, os.path.join(DATA_PATH, 'test', 'impact.shp')])
+                impact = calculate_impact(
+                    layers=[exposure_layer, hazard_layer],
+                    impact_fcn=impact_function
+                )
+                output_style = os.path.join(DATA_PATH, 'impact', 'impact_style.json')
+                print output_style
+                with open(output_style, 'w') as style_json:
+                    json.dump(impact.style_info, style_json)
+                output = os.path.join(DATA_PATH, 'impact', 'impact.json')
+                #call(['ogr2ogr', '-f', 'KML', output, impact.filename])
+                #call(['ogr2ogr', '-f', 'KML', output, '/vagrant/webapp/data/impact.shp'])
+                #call(['ogr2ogr', '-f', 'GeoJSON', output, impact.filename])
+                
+                ####################################CHANGE THIS FOR DEMO PURPOSES##########################################
+                call(['ogr2ogr', '-f', 'GeoJSON', output, os.path.join(DATA_PATH, 'test', 'impact.shp')])
         
-            result = impact.keywords["impact_summary"]
-        except:
-            raise
-        else:
-            self.render("result.html", result=result)
+                result = impact.keywords["impact_summary"]
+            except:
+                raise
+            else:
+                self.render("result.html", result=result)
         
     def get(self):
         try:

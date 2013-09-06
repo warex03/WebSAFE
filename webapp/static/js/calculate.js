@@ -11,18 +11,36 @@ $(function() {
     });
     
     $("#calculate")[0].onclick = function(){
-        //TODO: put here the validation of required keywords for InaSAFE calculation
         hazard = $("#hazard_filename").val();
+        hazard_name = $("#hazard_name").val();
+        hazard_title = $("#hazard_title").val();
+        hazard_category = $("#hazard_category").val();
+        hazard_subcategory = $("#hazard_subcategory").val();
+        
         exposure = $("#exposure_filename").val();
-    
-        //Fix the <br> tags with correct css please
-        var msg = 'Please wait while the system is calculating the results...';
-        var br = '<br><br><br><br><br><br><br><br>';
-        var progressbar = '<div class="progress progress-striped active">' +
-            '<div class="progress-bar"  role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div></div>';
-        $("#accordion").accordion("option", "active", 1);
-        $("#results").html(br +msg+ progressbar);
-        calculate(exposure, hazard);
+        exposure_name = $("#exposure_name").val();
+        exposure_title = $("#exposure_title").val();
+        exposure_category = $("#exposure_category").val();
+        exposure_subcategory = $("#exposure_subcategory").val();
+        
+        //Simple client-side validation of required keywords for InaSAFE calculation
+        if (isEmpty(exposure) || isEmpty(exposure_name) || isEmpty(exposure_title)
+                    || isEmpty(exposure_category) || isEmpty(exposure_subcategory)){
+            alert("Please fill all the exposure fields with correct information!");
+        }else if (isEmpty(hazard) || isEmpty(hazard_name) || isEmpty(hazard_title)
+                    || isEmpty(hazard_category) || isEmpty(hazard_subcategory)){    
+            alert("Please fill all the hazard fields with correct information!");
+        }else{
+            //Fix the <br> tags with correct css please
+            var msg = 'Please wait while the system is calculating the results...';
+            var br = '<br><br><br><br><br><br><br><br>';
+            var progressbar = '<div class="progress progress-striped active">' +
+                '<div class="progress-bar"  role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div></div>';
+            $("#accordion").accordion("option", "active", 1);
+            $("#results").html(br +msg+ progressbar);
+            calculate(exposure, exposure_category, exposure_subcategory,
+                    hazard, hazard_category, hazard_subcategory);
+        }
     };
     
     $("#reset")[0].onclick = function(){
@@ -52,15 +70,28 @@ function fileTreeInit(data){
             type = "exposure";
         }
         
+        //gets a GeoJson of the layers of clicked layer item in the file tree and overlays them in the map
+        //TODO2: manage layers well. only 1 or 2 layers at a time. max: 3////////////////////////////////////////////////////////////
+        //TODO3: updates the 3rd tab for layer ordering//////////////////////////////////////////////////////////////////////////////
+        $.getJSON('/layers', {filename: file}, function(geojsonFeature){
+            var color = "#009999";
+            if(type == "hazard"){
+                color = "#E5743D";
+            }
+            var myLayer = L.geoJson(geojsonFeature, {style: {"color": color}}).addTo(map);
+            map.fitBounds(myLayer.getBounds());
+        });
+        
+        //update the layer info fields when the user clicks on a file in the file tree
         $.post("/layers", {filename: file, layer_type: type})
         .done(function(data){
             initializeFields(type);
             $("#"+type+"_"+"filename").val(file);
-            console.log($("#"+type+"_"+"filename").val());
             $.each(data, function(key, val){
                 $("#"+type+"_"+key).val(val);
             });
         })
+        .fail(function(){ alert("Failed to load the style for the impact layer!"); });
     });
 }
 
@@ -74,33 +105,33 @@ function initializeFields(type){
 }
 
 //Function that sends a post request containing the filenames of the hazard and exposure layers to the server
-function calculate(exposure, hazard){
+function calculate(exposure, exposure_category, exposure_subcategory,
+                    hazard, hazard_category, hazard_subcategory){
     $.post("/calculate", 
-        {purpose: "calculate", hazard: hazard, exposure: exposure})
+        {purpose: "calculate", hazard: hazard, hazard_category: hazard_category, hazard_subcategory: hazard_subcategory,
+        exposure: exposure, exposure_category: exposure_category, exposure_subcategory: exposure_subcategory})
     .done(function(data){
-        var pdf_button = '<!--<button class="btn btn-primary btn-xs pull-left" id="view_pdf"> View PDF </button>-->';
+        var pdf_button = '<button class="btn btn-primary btn-xs pull-left" id="view_pdf"> View PDF </button>';
         $("#results").html(pdf_button + data);
-        /*
-        var kmlLayer = new L.KML("/impact", {async: true});
-        kmlLayer.on("loaded", function(e) { 
-            map.fitBounds(e.target.getBounds());
-        });                                   
-        map.addLayer(kmlLayer);
+        
         $("#view_pdf")[0].onclick = function(){
+            $.post("/calculate", {purpose: "pdf"})
+            .done(function(data){
+                
+            });
+            /*
             var doc = new jsPDF();
             specialElementHandlers = {
                 '#result': function(element, renderer){
                     return true
                 }
             }
-            
             doc.fromHTML($('#result').get(0), 10, 10, {
                 'width': 1000, 'elementHandlers': specialElementHandlers
             });
-            
             doc.output('dataurlnewwindow');
+            */
         };
-        */
         
         $.getJSON('/impactstyle')
         .done(function(style_info){
@@ -118,4 +149,8 @@ function calculate(exposure, hazard){
         });
     })
     .fail(function(data){ alert("POST request failed!"); });
+}
+
+function isEmpty(str) {
+    return (!str || 0 === str.length || str == "Not Set");
 }

@@ -28,7 +28,7 @@ class update {
 class inasafe {
   package {['python-pip', 'rsync', 'git', 'pep8', 'python-nose', 'python-coverage', 'python-sphinx',
             'pyqt4-dev-tools', 'pyflakes', 'python-dev', 'python-gdal', 'curl', 'libpq-dev',
-            'python-psycopg2', 'gdal-bin', 'postgresql-9.2']:
+            'python-psycopg2', 'gdal-bin', 'postgresql-9.2',]:
     ensure => present,
     provider => 'apt'
   }

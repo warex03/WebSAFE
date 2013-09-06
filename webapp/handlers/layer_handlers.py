@@ -9,8 +9,8 @@ from safe.api import read_layer
 '''
 class LayerHandler(tornado.web.RequestHandler): 
     def post(self):
-        layer_type = self.get_argument("layer_type", "None")
-        filename = self.get_argument("filename", "None")
+        layer_type = self.get_argument("layer_type")
+        filename = self.get_argument("filename")
         encoding = sys.getfilesystemencoding()
         if "hazard" in layer_type:
             layer = read_layer(filename.encode(encoding))
@@ -25,3 +25,17 @@ class LayerHandler(tornado.web.RequestHandler):
             json_data.update({ "name": layer.name })
             self.set_header("Content-Type", "application/json")
             self.write(json.dumps(json_data))
+            
+    def get(self):
+        filename = self.get_argument("filename")
+        output = filename[:-4]
+        output = output + '.json'
+        try:
+            call(['ogr2ogr', '-f', 'GeoJSON', output, filename])
+            data = open(output)
+            f = data.read()
+            self.set_header("Content-Type", "application/json")
+            self.write(f)
+            data.close()
+        except:
+            raise

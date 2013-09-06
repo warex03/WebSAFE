@@ -1,34 +1,4 @@
-
-from PyQt4 import QtCore, QtGui
-from PyQt4.QtCore import QCoreApplication
-
-def setupPrinter(theFilename,
-                 theResolution=300,
-                 thePageHeight=297,
-                 thePageWidth=210):
-    """Create a QPrinter instance defaulted to print to an A4 portrait pdf
-
-    Args:
-        theFilename - filename for pdf generated using this printer
-    Returns:
-        None
-    Raises:
-        None
-    """
-    #
-    # Create a printer device (we are 'printing' to a pdf
-    #
-    #app = QtGui.QApplication([])
-    myPrinter = QtGui.QPrinter()
-    myPrinter.setOutputFormat(QtGui.QPrinter.PdfFormat)
-    myPrinter.setOutputFileName(theFilename)
-    myPrinter.setPaperSize(
-        QtCore.QSizeF(thePageWidth, thePageHeight),
-        QtGui.QPrinter.Millimeter)
-    myPrinter.setFullPage(True)
-    myPrinter.setColorMode(QtGui.QPrinter.Color)
-    myPrinter.setResolution(theResolution)
-    return myPrinter
+import sys
     
 def impactLayerAttribution(theKeywords, theInaSAFEFlag=False):
     """Make a little table for attribution of data sources used in impact.

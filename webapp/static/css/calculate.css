@@ -8,7 +8,7 @@ body{
     width:100%;
 }
 .ui-tabs .ui-tabs-nav li a {
-    font-size:11pt !important;
+    font-size:10pt !important;
 }
 #tabs {
     height: 80%;

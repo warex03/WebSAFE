@@ -6,6 +6,8 @@ from subprocess import call
 from safe.api import read_layer, calculate_impact
 from safe.impact_functions.inundation.flood_OSM_building_impact \
     import FloodBuildingImpactFunction
+    
+from weasyprint import HTML, CSS
 
 class IndexHandler(tornado.web.RequestHandler):
 	def get(self):
@@ -14,9 +16,15 @@ class IndexHandler(tornado.web.RequestHandler):
 class CalculateHandler(tornado.web.RequestHandler):
         
     def post(self):
-        purpose = self.get_argument("purpose", "None")
+        purpose = self.get_argument("purpose")
         if "pdf" in purpose:
-            print purpose
+            html = self.get_argument("html")
+            output = os.path.join(DATA_PATH, 'pdf', 'report.pdf')
+            data = open(os.path.join(ROOT, 'static', 'css', 'pdf.css'))
+            css = data.read()
+            data.close()
+            HTML(string=html).write_pdf(output, stylesheets=[CSS(string=css)])
+            return
         elif "calculate" in purpose:
             encoding = sys.getfilesystemencoding()
             exposure = self.get_argument("exposure")
@@ -87,7 +95,7 @@ class ImpactStyleHandler(tornado.web.RequestHandler):
         
 class ImpactPDFHandler(tornado.web.RequestHandler):
     def get(self):
-        data = open('/vagrant/webapp/data/pdf/impact.pdf')
+        data = open(os.path.join(DATA_PATH, 'pdf', 'report.pdf'))
         f = data.read()
         self.set_header("Content-Type", "application/pdf")
         self.write(f)

@@ -114,25 +114,15 @@ function calculate(exposure, exposure_category, exposure_subcategory,
         var pdf_button = '<button class="btn btn-primary btn-xs pull-left" id="view_pdf"> View PDF </button>';
         $("#results").html(pdf_button + data);
         
+        //Create the pdf report asynchronously
+        $.post("/calculate", {purpose: "pdf", html: data});
+        
+        //Set the onclick listener of the button to show the pdf on a new window
         $("#view_pdf")[0].onclick = function(){
-            $.post("/calculate", {purpose: "pdf"})
-            .done(function(data){
-                
-            });
-            /*
-            var doc = new jsPDF();
-            specialElementHandlers = {
-                '#result': function(element, renderer){
-                    return true
-                }
-            }
-            doc.fromHTML($('#result').get(0), 10, 10, {
-                'width': 1000, 'elementHandlers': specialElementHandlers
-            });
-            doc.output('dataurlnewwindow');
-            */
+            window.open("/pdf");
         };
         
+        //create the impact style of the GeoJson impact layer
         $.getJSON('/impactstyle')
         .done(function(style_info){
             //AJAX call that gets the GeoJson of the impact layer

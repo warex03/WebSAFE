@@ -44,8 +44,21 @@ class inasafe {
   #}
 }
 
+class weasyprint {
+  package {['python-lxml', 'libcairo2', 'libpango1.0-0', 'libgdk-pixbuf2.0-0', 'libffi-dev',]:
+    ensure => present,
+    provider => 'apt'
+  }
+  
+  package { ['weasyprint', 'pyphen']:
+    ensure  => installed,
+    provider => pip
+  }
+}
+
 #class {'update':}
 class {'inasafe':}
+class {'weasyprint':}
 
 #cloud-sptheme 
 #python-nosexcover

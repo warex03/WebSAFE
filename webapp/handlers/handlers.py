@@ -45,6 +45,7 @@ class CalculateHandler(tornado.web.RequestHandler):
                 hazard_layer.keywords['category'] = hazard_category
                 hazard_layer.keywords['subcategory'] = hazard_subcategory
                 
+                #define a method that determines the correct impact function based on keywords given
                 impact_function = FloodBuildingImpactFunction
             
                 impact = calculate_impact(
@@ -56,9 +57,9 @@ class CalculateHandler(tornado.web.RequestHandler):
                     json.dump(impact.style_info, style_json)
                 output = os.path.join(DATA_PATH, 'impact', 'impact.json')
                 
-                ####################################CHANGE THIS FOR DEMO PURPOSES##########################################
-                # use impact.filename
-                call(['ogr2ogr', '-f', 'GeoJSON', output, os.path.join(DATA_PATH, 'test', 'impact.shp')])
+                #call(['ogr2ogr', '-f', 'GeoJSON', output, os.path.join(DATA_PATH, 'test', 'impact.shp')])
+                #print impact.filename
+                call(['ogr2ogr', '-f', 'GeoJSON', output, impact.filename])
         
                 result = impact.keywords["impact_summary"]
             except:

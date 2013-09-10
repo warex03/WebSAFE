@@ -10,6 +10,14 @@ body{
 .ui-tabs .ui-tabs-nav li a {
     font-size:10pt !important;
 }
+input {
+    width: 100% !important;
+    font-size: 10px !important;
+}
+select {
+    width: 100% !important;
+    font-size: 11px !important;
+}
 #tabs {
     height: 80%;
 }
@@ -23,4 +31,15 @@ body{
 #tabs-1 {
     height: 92%;
     overflow: scroll;
+}
+.legend {
+    line-height: 18px;
+    color: #555;
+}
+.legend i {
+    width: 18px;
+    height: 18px;
+    float: left;
+    margin-right: 8px;
+    opacity: 0.7;
 }

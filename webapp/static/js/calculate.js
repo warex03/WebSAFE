@@ -24,12 +24,12 @@ $(function() {
         exposure_subcategory = $("#exposure_subcategory").val();
         
         //Simple client-side validation of required keywords for InaSAFE calculation
-        if (isEmpty(exposure) || isEmpty(exposure_name) || isEmpty(exposure_title)
-                    || isEmpty(exposure_category) || isEmpty(exposure_subcategory)){
-            alert("Please fill all the exposure fields with correct information!");
-        }else if (isEmpty(hazard) || isEmpty(hazard_name) || isEmpty(hazard_title)
+        if (isEmpty(hazard) || isEmpty(hazard_name) || isEmpty(hazard_title)
                     || isEmpty(hazard_category) || isEmpty(hazard_subcategory)){    
             alert("Please fill all the hazard fields with correct information!");
+        }else if (isEmpty(exposure) || isEmpty(exposure_name) || isEmpty(exposure_title)
+                    || isEmpty(exposure_category) || isEmpty(exposure_subcategory)){
+            alert("Please fill all the exposure fields with correct information!");
         }else{
             //Fix the <br> tags with correct css please
             var msg = 'Please wait while the system is calculating the results...';
@@ -135,6 +135,23 @@ function calculate(exposure, exposure_category, exposure_subcategory,
                     }
                 }).addTo(map);
                 map.fitBounds(myLayer.getBounds());
+                
+                var legend = L.control({position: 'bottomleft'});
+                legend.onAdd = function(map){
+                        var div = L.DomUtil.create('div', 'info legend'),
+                        grades = [0, 10, 20, 50, 100, 200, 500, 1000],
+                        labels = [];
+
+                    // loop through our density intervals and generate a label with a colored square for each interval
+                    for (var i = 0; i < grades.length; i++) {
+                        div.innerHTML +=
+                        '<i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
+                        grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+                    }
+
+                    return div;
+                };
+                legend.addTo(map);
             });
         });
     })

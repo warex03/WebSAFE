@@ -1,4 +1,5 @@
 var map;
+var div_legend;
 
 $(function() {
     var hazard;
@@ -56,7 +57,15 @@ function mapInit() {
     map = L.map('map').setView([12.3, 122], 5);
     var gmapsAttrib = '&copy; <a href="http://www.google.com.ph/permissions/geoguidelines.html">Google Maps</a> contributors';
     var gmapsURL = 'http://mt1.google.com/vt/v=w2.106&x={x}&y={y}&z={z}';
-    L.tileLayer(gmapsURL, {maxZoom: 18, minZoom: 4, attribution: gmapsAttrib}).addTo(map); 
+    L.tileLayer(gmapsURL, {maxZoom: 18, minZoom: 4, attribution: gmapsAttrib}).addTo(map);
+    var legend = L.control({position: 'bottomleft'});
+    legend.onAdd = function(map){
+        div_legend = L.DomUtil.create('div', 'info legend');
+        div_legend.innerHTML = '<h4>Legend</h4>' + '<i style="background:#009999"></i>Hazard<br>' +
+            '<i style="background:#E5743D"></i>Exposure<br>';
+        return div_legend;
+    };
+    legend.addTo(map);
 }
 
 //This function initializes the filetree but also listens to events related to that file tree
@@ -78,8 +87,9 @@ function fileTreeInit(data){
             if(type == "hazard"){
                 color = "#E5743D";
             }
-            var myLayer = L.geoJson(geojsonFeature, {style: {"color": color}}).addTo(map);
+            var myLayer = L.geoJson(geojsonFeature, {style: {"color": color, "weight": 1}}).addTo(map);
             map.fitBounds(myLayer.getBounds());
+            
         });
         
         //update the layer info fields when the user clicks on a file in the file tree
@@ -127,31 +137,23 @@ function calculate(exposure, exposure_category, exposure_subcategory,
         .done(function(style_info){
             //AJAX call that gets the GeoJson of the impact layer
             $.getJSON('/json', function(geojsonFeature){
+                var string = '';
                 var myLayer = L.geoJson(geojsonFeature, {
                     style: function(feature){
                         var target_field = style_info.target_field;
                         var target_property = feature.properties[target_field];
-                        return {color: style_info.style_classes[target_property].colour};
+                        var color = style_info.style_classes[target_property].colour;
+                        return {color: color, weight: 1};
                     }
                 }).addTo(map);
-                map.fitBounds(myLayer.getBounds());
                 
-                var legend = L.control({position: 'bottomleft'});
-                legend.onAdd = function(map){
-                        var div = L.DomUtil.create('div', 'info legend'),
-                        grades = [0, 10, 20, 50, 100, 200, 500, 1000],
-                        labels = [];
-
-                    // loop through our density intervals and generate a label with a colored square for each interval
-                    for (var i = 0; i < grades.length; i++) {
-                        div.innerHTML +=
-                        '<i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
-                        grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
-                    }
-
-                    return div;
-                };
-                legend.addTo(map);
+                $.each(style_info.style_classes, function(k){
+                    var label = style_info.style_classes[k].label;
+                    var color = style_info.style_classes[k].colour;
+                    string += '<i style="background:' +color+ '"></i>' +label+ '<br>';
+                });
+                $(".legend").append(string);
+                map.fitBounds(myLayer.getBounds());
             });
         });
     })

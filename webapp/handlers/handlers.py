@@ -57,8 +57,6 @@ class CalculateHandler(tornado.web.RequestHandler):
                     json.dump(impact.style_info, style_json)
                 output = os.path.join(DATA_PATH, 'impact', 'impact.json')
                 
-                #call(['ogr2ogr', '-f', 'GeoJSON', output, os.path.join(DATA_PATH, 'test', 'impact.shp')])
-                #print impact.filename
                 call(['ogr2ogr', '-f', 'GeoJSON', output, impact.filename])
         
                 result = impact.keywords["impact_summary"]

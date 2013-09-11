@@ -61,8 +61,8 @@ function mapInit() {
     var legend = L.control({position: 'bottomleft'});
     legend.onAdd = function(map){
         div_legend = L.DomUtil.create('div', 'info legend');
-        div_legend.innerHTML = '<h4>Legend</h4>' + '<i style="background:#009999"></i>Hazard<br>' +
-            '<i style="background:#E5743D"></i>Exposure<br>';
+        div_legend.innerHTML = '<h4>Legend</h4>' + '<i style="background:#E5743D"></i>Hazard<br>' +
+            '<i style="background:#009999"></i>Exposure<br>';
         return div_legend;
     };
     legend.addTo(map);
@@ -85,7 +85,7 @@ function fileTreeInit(data){
         $.getJSON('/layers', {filename: file}, function(geojsonFeature){
             var color = "#009999";
             if(type == "hazard"){
-                color = "#E5743D";
+                color = "#";
             }
             var myLayer = L.geoJson(geojsonFeature, {style: {"color": color, "weight": 1}}).addTo(map);
             map.fitBounds(myLayer.getBounds());

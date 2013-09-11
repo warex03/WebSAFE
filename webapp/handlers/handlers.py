@@ -78,7 +78,7 @@ class ImpactKMLHandler(tornado.web.RequestHandler):
         
 class ImpactJSONHandler(tornado.web.RequestHandler):
     def get(self):
-        data = open('/vagrant/webapp/data/impact/impact.json')
+        data = open(os.path.join(DATA_PATH, 'impact', 'impact.json'))
         f = data.read()
         self.set_header("Content-Type", "application/json")
         self.write(f)
@@ -86,7 +86,7 @@ class ImpactJSONHandler(tornado.web.RequestHandler):
         
 class ImpactStyleHandler(tornado.web.RequestHandler):
     def get(self):
-        data = open('/vagrant/webapp/data/impact/impact_style.json')
+        data = open(os.path.join(DATA_PATH, 'impact', 'impact_style.json'))
         f = data.read()
         self.set_header("Content-Type", "application/json")
         self.write(f)

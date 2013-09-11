@@ -85,7 +85,7 @@ function fileTreeInit(data){
         $.getJSON('/layers', {filename: file}, function(geojsonFeature){
             var color = "#009999";
             if(type == "hazard"){
-                color = "#";
+                color = "#E5743D";
             }
             var myLayer = L.geoJson(geojsonFeature, {style: {"color": color, "weight": 1}}).addTo(map);
             map.fitBounds(myLayer.getBounds());

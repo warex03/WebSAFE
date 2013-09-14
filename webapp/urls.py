@@ -1,7 +1,7 @@
 from handlers.handlers import IndexHandler, CalculateHandler, \
-    ImpactKMLHandler, ImpactJSONHandler, ImpactPDFHandler, \
+    ImpactJSONHandler, ImpactPDFHandler, ImpactKMLHandler, \
     ImpactStyleHandler, FileTreeHandler
-from handlers.layer_handlers import LayerHandler
+from handlers.layerapi_handlers import LayerHandler
     
 from modules import NavbarModule
 
@@ -12,12 +12,15 @@ import tornado.web
 handlers = [
     (r"/", IndexHandler),
     (r"/calculate", CalculateHandler),
-    (r"/impact", ImpactKMLHandler),
+    (r"/layers", LayerHandler),
+]
+
+handlers += [
     (r"/impactstyle", ImpactStyleHandler),
     (r"/json", ImpactJSONHandler),
     (r"/pdf", ImpactPDFHandler),
+    (r"/kml", ImpactKMLHandler),
     (r"/filetree", FileTreeHandler),
-    (r"/layers", LayerHandler),
 ]
 
 class Application(tornado.web.Application):

@@ -4,6 +4,8 @@ from Settings import ROOT, DATA_PATH
 from subprocess import call
 
 from safe.api import read_layer, calculate_impact
+from safe.impact_functions.core import requirements_collect, get_doc_string, \
+    requirement_check
 from safe.impact_functions.inundation.flood_OSM_building_impact \
     import FloodBuildingImpactFunction
     
@@ -14,8 +16,9 @@ class IndexHandler(tornado.web.RequestHandler):
 		self.render("index.html")
  
 class CalculateHandler(tornado.web.RequestHandler):
-        
+
     def post(self):
+        result = None
         purpose = self.get_argument("purpose")
         if "pdf" in purpose:
             html = self.get_argument("html")
@@ -34,6 +37,7 @@ class CalculateHandler(tornado.web.RequestHandler):
             hazard = self.get_argument("hazard")
             hazard_category = self.get_argument("hazard_category")
             hazard_subcategory = self.get_argument("hazard_subcategory")
+            #params = {}
             
             try:
                 hazard_layer = read_layer(hazard.encode(encoding))
@@ -47,34 +51,45 @@ class CalculateHandler(tornado.web.RequestHandler):
                 
                 #define a method that determines the correct impact function based on keywords given
                 impact_function = FloodBuildingImpactFunction
-            
-                impact = calculate_impact(
-                    layers=[exposure_layer, hazard_layer],
-                    impact_fcn=impact_function
-                )
-                output_style = os.path.join(DATA_PATH, 'impact', 'impact_style.json')
-                with open(output_style, 'w') as style_json:
-                    json.dump(impact.style_info, style_json)
-                output = os.path.join(DATA_PATH, 'impact', 'impact.json')
+                #requirements = requirements_collect(impact_function)
+                #print requirements
+                #requirement_check(params=params, require_str=requirements, verbose=True)
                 
-                call(['ogr2ogr', '-f', 'GeoJSON', output, impact.filename])
+                output = os.path.join(DATA_PATH, 'impact', 'impact.json')
+                output_style = os.path.join(DATA_PATH, 'impact', 'impact_style.json')
+                output_summary = os.path.join(DATA_PATH, 'impact', 'impact_summary.html')
+                
+                if os.path.exists(output) and os.path.exists(output_style) \
+                    and os.path.exists(output_summary):
+                        with open(output_summary) as summary:
+                            result = summary.read()
+                            summary.close()
+                else:           
+                    impact = calculate_impact(
+                        layers=[exposure_layer, hazard_layer],
+                        impact_fcn=impact_function
+                    )
+                
+                    #create the style for the impact layer
+                    with open(output_style, 'w') as style_json:
+                        json.dump(impact.style_info, style_json)
+                        style_json.close()
+                
+                    call(['ogr2ogr', '-f', 'GeoJSON', output, impact.filename])
         
-                result = impact.keywords["impact_summary"]
+                    #create the impact summary file
+                    result = impact.keywords["impact_summary"]
+                    with open(output_summary, 'w') as summary:
+                        summary.write(result)
+                        summary.close()
             except:
+                print 'IO Error or something else has occurred!'
                 raise
             else:
                 self.render("result.html", result=result)
         
     def get(self):
         self.render( "calculate.html", data_path=DATA_PATH)
-        
-class ImpactKMLHandler(tornado.web.RequestHandler):
-    def get(self):
-        data = open('/vagrant/webapp/data/impact/impact.KML')
-        f = data.read()
-        self.set_header("Content-Type", "soap/xml")
-        self.write(f)
-        data.close()
         
 class ImpactJSONHandler(tornado.web.RequestHandler):
     def get(self):
@@ -89,6 +104,14 @@ class ImpactStyleHandler(tornado.web.RequestHandler):
         data = open(os.path.join(DATA_PATH, 'impact', 'impact_style.json'))
         f = data.read()
         self.set_header("Content-Type", "application/json")
+        self.write(f)
+        data.close()
+        
+class ImpactKMLHandler(tornado.web.RequestHandler):
+    def get(self):
+        data = open(os.path.join(DATA_PATH, 'impact', 'impact.KML'))
+        f = data.read()
+        self.set_header("Content-Type", "application/xml")
         self.write(f)
         data.close()
         

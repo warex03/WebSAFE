@@ -79,6 +79,18 @@ function fileTreeInit(data){
             type = "exposure";
         }
         
+        /* TOOOOOOOOOOOOOOOOOOOOOOOODDDDDDDDDDDDDDDDDDDDDDDDDDDDDDOOOOOOOOOOOOOOOOOOOOOOOO
+        var geoXml = new geoXML3.parser({ singleInfoWindow: true, afterParse: kmlToJson});
+        geoXml.parse('/kml');
+        function kmlToJson(doc){
+            /*
+            for (var i=0; i<json_data[0].placemarks.length; i++) {
+                place_list.push({id: i, text: json_data[0].placemarks[i].name});
+            }
+            console.log(doc[0]);
+        }
+        */
+        
         //gets a GeoJson of the layers of clicked layer item in the file tree and overlays them in the map
         //TODO2: manage layers well. only 1 or 2 layers at a time. max: 3////////////////////////////////////////////////////////////
         //TODO3: updates the 3rd tab for layer ordering//////////////////////////////////////////////////////////////////////////////

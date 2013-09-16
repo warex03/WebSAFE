@@ -6,10 +6,12 @@ $(function() {
     var exposure;
     
     $("#tabs").tabs();
+    $("#tabs").css("visibility", "visible");
     $("#accordion").accordion({
         collapsible: true,
         heightStyle: "content"
     });
+    $("#accordion").css("visibility", "visible");
     
     $("#calculate")[0].onclick = function(){
         hazard = $("#hazard_filename").val();

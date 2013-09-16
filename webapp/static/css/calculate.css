@@ -19,7 +19,11 @@ select {
     font-size: 11px !important;
 }
 #tabs {
+    visibility: hidden;
     height: 80%;
+}
+#accordion {
+    visibility: hidden;
 }
 #accordion_content, #accordion_content2 {
     background: #ccc;

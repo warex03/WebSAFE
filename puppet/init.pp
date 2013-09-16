@@ -20,6 +20,11 @@ class update {
     before => Exec['apt-update']
   }
   
+  exec {'add-mapnik':
+    command => '/usr/bin/add-apt-repository ppa:mapnik/v2.2.0',
+    before => Exec['apt-update']
+  }
+  
   exec {'apt-update':
     command => '/usr/bin/apt-get update'
   }
@@ -28,12 +33,12 @@ class update {
 class inasafe {
   package {['python-pip', 'rsync', 'git', 'pep8', 'python-nose', 'python-coverage', 'python-sphinx',
             'pyqt4-dev-tools', 'pyflakes', 'python-dev', 'python-gdal', 'curl', 'libpq-dev',
-            'python-psycopg2', 'gdal-bin', 'postgresql-9.2',]:
+            'python-psycopg2', 'gdal-bin', 'postgresql-9.2', ]:
     ensure => present,
     provider => 'apt'
   }
   
-  package { ['tornado', 'numpy', 'pisa', 'reportlab', 'html5lib', 'sqlalchemy',]:
+  package { ['tornado', 'numpy', 'sqlalchemy',]:
     ensure  => installed,
     provider => pip
   }
@@ -56,9 +61,17 @@ class weasyprint {
   }
 }
 
-#class {'update':}
+class mapnik {
+  package {['libmapnik', 'mapnik-utils', 'python-mapnik',]:
+    ensure => present,
+    provider => 'apt'
+  }
+}
+
+class {'update':}
 class {'inasafe':}
 class {'weasyprint':}
+class {'mapnik':}
 
 #cloud-sptheme 
 #python-nosexcover

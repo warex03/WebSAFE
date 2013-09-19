@@ -1,4 +1,5 @@
 import tornado.web
+import mapnik2, cairo
 import json, httplib, urllib2, glob, os, sys
 from Settings import ROOT, DATA_PATH
 from subprocess import call
@@ -14,6 +15,14 @@ from weasyprint import HTML, CSS
 class IndexHandler(tornado.web.RequestHandler):
 	def get(self):
 		self.render("index.html")
+        
+class ExposuresHandler(tornado.web.RequestHandler):
+    def get(self):
+        self.render("exposure.html")
+
+class HazardsHandler(tornado.web.RequestHandler):
+    def get(self):
+        self.render("hazard.html")
  
 class CalculateHandler(tornado.web.RequestHandler):
 
@@ -121,15 +130,72 @@ class ImpactPDFHandler(tornado.web.RequestHandler):
         f = data.read()
         self.set_header("Content-Type", "application/pdf")
         self.write(f)
-        data.close()
+        data.close()        
+        
+class ImpactMapPDFHandler(tornado.web.RequestHandler):
+    def get(self):
+        mapfile = os.path.join(DATA_PATH, 'hazard', 'flood.shp')
+        #mapfile = os.path.join(DATA_PATH, 'impact', 'impact.json')
+        filename = os.path.join(DATA_PATH, 'pdf', 'report_map.pdf')
+        filename2 = os.path.join(DATA_PATH, 'pdf', 'report_map.png')
+        map = mapnik2.Map(600, 400)
+        
+        map.background = mapnik2.Color('steelblue')
+        s = mapnik2.Style()
+        r = mapnik2.Rule()
+        polygon_symbolizer = mapnik2.PolygonSymbolizer(mapnik2.Color('#f2eff9'))
+        r.symbols.append(polygon_symbolizer)
+        line_symbolizer = mapnik2.LineSymbolizer(mapnik2.Color('rgb(50%,50%,50%)'),0.1)
+        r.symbols.append(line_symbolizer)
+        s.rules.append(r)
+        map.append_style('My Style',s)
+        ds = mapnik2.Shapefile(file=mapfile)
+        layer = mapnik2.Layer('world')
+        layer.datasource = ds
+        layer.styles.append('My Style')
+        map.layers.append(layer)
+        map.zoom_all()
+        mapnik2.render_to_file(map, filename2, 'png')
+        
+        #bbox = mapnik.Envelope(-180.0,-90.0,180.0,90.0)
+        #map.zoom_to_box(bbox)
+        surface = cairo.PDFSurface(filename, map.width, map.height)
+        mapnik2.render(map, surface)
+        surface.finish()
+        
+        with open(filename) as data:
+            pdf = data.read()
+            data.close()
+            self.set_header("Content-Type", "application/pdf")
+            self.write(pdf)
+    '''
+        pdf = None
+        filename = os.path.join(DATA_PATH, 'pdf', 'report_map.pdf')
+        try:
+            if os.path.exists(filename):
+                with open(filename) as data:
+                    pdf = data.read()
+                    data.close()
+            else:
+                print 'lol'
+            self.set_header("Content-Type", "application/pdf")
+            self.write(pdf)
+        except:
+            raise
+        #data = open(os.path.join(ROOT, 'static', 'css', 'pdf.css'))
+        #css = data.read()
+        #HTML(string=html).write_pdf(filename)
+    '''
         
 class FileTreeHandler(tornado.web.RequestHandler):
     def post(self):
         to_return = ['<ul class="jqueryFileTree" style="display: none;">']
         try:
             dir = self.get_argument("dir", DATA_PATH)
+            if dir == '/':
+                dir = DATA_PATH
             for f in os.listdir(dir):
-                ff=os.path.join(dir,f)
+                ff=os.path.join(dir, f)
                 if os.path.isdir(ff) and "exposure" in ff:
                     to_return.append('<li class="directory collapsed"><a href="#" rel="%s/">%s</a></li>' % (ff,f))
                     

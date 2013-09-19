@@ -1,6 +1,6 @@
 from handlers.handlers import IndexHandler, CalculateHandler, \
     ImpactJSONHandler, ImpactPDFHandler, ImpactKMLHandler, \
-    ImpactStyleHandler, FileTreeHandler
+    ImpactStyleHandler, ImpactMapPDFHandler, FileTreeHandler
 from handlers.layerapi_handlers import LayerHandler
     
 from modules import NavbarModule
@@ -18,6 +18,7 @@ handlers = [
 handlers += [
     (r"/impactstyle", ImpactStyleHandler),
     (r"/json", ImpactJSONHandler),
+    (r"/mappdf", ImpactMapPDFHandler),
     (r"/pdf", ImpactPDFHandler),
     (r"/kml", ImpactKMLHandler),
     (r"/filetree", FileTreeHandler),

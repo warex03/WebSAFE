@@ -25,6 +25,11 @@ class update {
     before => Exec['apt-update']
   }
   
+  exec {'add-mapnik-boost':
+    command => '/usr/bin/add-apt-repository ppa:mapnik/boost',
+    before => Exec['apt-update']
+  }
+  
   exec {'apt-update':
     command => '/usr/bin/apt-get update'
   }
@@ -62,7 +67,9 @@ class weasyprint {
 }
 
 class mapnik {
-  package {['libmapnik', 'mapnik-utils', 'python-mapnik',]:
+  package {['libmapnik2-dev', 'libmapnik', 'mapnik-utils', 'libboost-dev',
+            'libboost-filesystem-dev', 'libboost-program-options-dev', 'libboost-python-dev',
+            'libboost-regex-dev', 'libboost-system-dev', 'libboost-thread-dev', ]:
     ensure => present,
     provider => 'apt'
   }

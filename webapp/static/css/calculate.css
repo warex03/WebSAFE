@@ -10,6 +10,9 @@ body{
 .ui-tabs .ui-tabs-nav li a {
     font-size:10pt !important;
 }
+#accordion_content label {
+    font-size: 10px;
+}
 input {
     width: 100% !important;
     font-size: 10px !important;

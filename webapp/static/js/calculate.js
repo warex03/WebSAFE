@@ -1,5 +1,7 @@
 var map;
+var br = '<br><br><br><br><br><br><br><br>';
 var div_legend;
+var layers = new Array();
 
 $(function() {
     var hazard;
@@ -7,10 +9,9 @@ $(function() {
     
     $("#tabs").tabs();
     $("#tabs").css("visibility", "visible");
-    $("#accordion").accordion({
-        collapsible: true,
-        heightStyle: "content"
-    });
+    fileTreeInit();
+    
+    $("#accordion").accordion({ heightStyle: "content" });
     $("#accordion").css("visibility", "visible");
     
     $("#calculate")[0].onclick = function(){
@@ -36,7 +37,6 @@ $(function() {
         }else{
             //Fix the <br> tags with correct css please
             var msg = 'Please wait while the system is calculating the results...';
-            var br = '<br><br><br><br><br><br><br><br>';
             var progressbar = '<div class="progress progress-striped active">' +
                 '<div class="progress-bar"  role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div></div>';
             $("#accordion").accordion("option", "active", 1);
@@ -47,11 +47,19 @@ $(function() {
     };
     
     $("#reset")[0].onclick = function(){
-        var br = '<br><br><br><br><br><br><br><br>';
         var msg = 'Please input the necessary data(i.e. exposure, hazard layers).';
         initializeFields("exposure");
         initializeFields("hazard");
         $("#results").html(br + msg);
+        for(var i=0; i<3; i++){
+            if (layers[i] != null){ 
+                map.removeLayer(layers[i]);
+                layers[i] = null;                
+            }
+        }
+        map.setView([12.3, 122], 5);
+        div_legend.innerHTML = '<h4>Legend</h4>' + '<i style="background:#E5743D"></i>Hazard<br>' +
+            '<i style="background:#009999"></i>Exposure<br>';
     };
 });
 
@@ -59,7 +67,7 @@ function mapInit() {
     map = L.map('map').setView([12.3, 122], 5);
     var gmapsAttrib = '&copy; <a href="http://www.google.com.ph/permissions/geoguidelines.html">Google Maps</a> contributors';
     var gmapsURL = 'http://mt1.google.com/vt/v=w2.106&x={x}&y={y}&z={z}';
-    L.tileLayer(gmapsURL, {maxZoom: 18, minZoom: 4, attribution: gmapsAttrib}).addTo(map);
+    L.tileLayer(gmapsURL, {maxZoom: 18, minZoom: 5, attribution: gmapsAttrib}).addTo(map);
     var legend = L.control({position: 'bottomleft'});
     legend.onAdd = function(map){
         div_legend = L.DomUtil.create('div', 'info legend');
@@ -71,15 +79,10 @@ function mapInit() {
 }
 
 //This function initializes the filetree but also listens to events related to that file tree
-function fileTreeInit(data){
-    $("#tabs-1").fileTree({ root: data, script: "/filetree" }, function(file) {
-        var type;
+function fileTreeInit(){
+    $("#tabs-1").fileTree({ script: "/filetree" }, function(file) {
         //Note: this is a weak way of determining the layer type
-        if(file.indexOf("/hazard/") != -1){
-            type = "hazard";
-        }else if(file.indexOf("/exposure/") != -1){
-            type = "exposure";
-        }
+        var type = (file.indexOf("/hazard/") != -1) ? "hazard" : "exposure";
         
         /* TOOOOOOOOOOOOOOOOOOOOOOOODDDDDDDDDDDDDDDDDDDDDDDDDDDDDDOOOOOOOOOOOOOOOOOOOOOOOO
         var geoXml = new geoXML3.parser({ singleInfoWindow: true, afterParse: kmlToJson});
@@ -94,16 +97,16 @@ function fileTreeInit(data){
         */
         
         //gets a GeoJson of the layers of clicked layer item in the file tree and overlays them in the map
-        //TODO2: manage layers well. only 1 or 2 layers at a time. max: 3////////////////////////////////////////////////////////////
         //TODO3: updates the 3rd tab for layer ordering//////////////////////////////////////////////////////////////////////////////
         $.getJSON('/layers', {filename: file}, function(geojsonFeature){
-            var color = "#009999";
-            if(type == "hazard"){
-                color = "#E5743D";
-            }
+            var color = (type == "hazard") ? "#E5743D" : "#009999";
+            var index = (type == "hazard") ? 1 : 0;
             var myLayer = L.geoJson(geojsonFeature, {style: {"color": color, "weight": 1}}).addTo(map);
+            if (layers[index] != null){
+                map.removeLayer(layers[index]);
+            }
+            layers[index] = myLayer;
             map.fitBounds(myLayer.getBounds());
-            
         });
         
         //update the layer info fields when the user clicks on a file in the file tree
@@ -138,10 +141,10 @@ function calculate(exposure, exposure_category, exposure_subcategory,
         var pdf_button = '<button class="btn btn-primary btn-xs pull-left" id="view_pdf"> View PDF </button>';
         $("#results").html(pdf_button + data);
         
-        //Create the pdf report asynchronously
+        //Create the pdf report
         $.post("/calculate", {purpose: "pdf", html: data});
         
-        //Set the onclick listener of the button to show the pdf on a new window
+        //Set the onclick listener of the button to show the pdf in a new window
         $("#view_pdf")[0].onclick = function(){
             window.open("/pdf");
         };
@@ -166,12 +169,21 @@ function calculate(exposure, exposure_category, exposure_subcategory,
                     var color = style_info.style_classes[k].colour;
                     string += '<i style="background:' +color+ '"></i>' +label+ '<br>';
                 });
+                map.removeLayer(layers[0]);
+                map.removeLayer(layers[1]);
+                layers[2] = myLayer;
+                div_legend.innerHTML = '<h4>Legend</h4>' + '<i style="background:#E5743D"></i>Hazard<br>' +
+                    '<i style="background:#009999"></i>Exposure<br>';
                 $(".legend").append(string);
                 map.fitBounds(myLayer.getBounds());
             });
         });
     })
-    .fail(function(data){ alert("POST request failed!"); });
+    .fail(function(data){
+        var msg = 'Please input the necessary data(i.e. exposure, hazard layers).';
+        $("#results").html(br + msg); 
+        alert("POST request failed!"); 
+    });
 }
 
 function isEmpty(str) {

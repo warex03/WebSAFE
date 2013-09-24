@@ -4,12 +4,10 @@ var div_legend;
 var layers = new Array();
 
 $(function() {
-    var hazard;
-    var exposure;
-    
     $("#tabs").tabs();
     $("#tabs").css("visibility", "visible");
     fileTreeInit();
+    $("#layer_sortable").sortable();
     
     $("#accordion").accordion({ heightStyle: "content" });
     $("#accordion").css("visibility", "visible");

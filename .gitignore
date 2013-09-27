@@ -1,3 +1,4 @@
 /webapp/data/*
 
 phantomjs
+/presentation/*

@@ -15,6 +15,10 @@ from weasyprint import HTML, CSS
 class IndexHandler(tornado.web.RequestHandler):
 	def get(self):
 		self.render("index.html")
+
+class AngularHandler(tornado.web.RequestHandler):
+	def get(self):
+		self.render("angular.html")
         
 class ExposuresHandler(tornado.web.RequestHandler):
     def get(self):

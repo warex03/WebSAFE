@@ -61,6 +61,13 @@ $(function() {
     };
 });
 
+function reset(){
+    $("#layer_sortable").sortable("refreshPositions");
+    $("#layer_sortable").sortable("refresh");
+    console.log($("#layer_sortable").sortable("toArray", {attribute: "value"}));
+    console.log(layers);
+}
+
 function mapInit() {
     map = L.map('map').setView([12.3, 122], 5);
     var gmapsAttrib = '&copy; <a href="http://www.google.com.ph/permissions/geoguidelines.html">Google Maps</a> contributors';
@@ -74,6 +81,7 @@ function mapInit() {
         return div_legend;
     };
     legend.addTo(map);
+    for(var i=0; i<3; i++){ layers[i] = null; }
 }
 
 //This function initializes the filetree but also listens to events related to that file tree
@@ -81,18 +89,6 @@ function fileTreeInit(){
     $("#tabs-1").fileTree({ script: "/filetree" }, function(file) {
         //Note: this is a weak way of determining the layer type
         var type = (file.indexOf("/hazard/") != -1) ? "hazard" : "exposure";
-        
-        /* TOOOOOOOOOOOOOOOOOOOOOOOODDDDDDDDDDDDDDDDDDDDDDDDDDDDDDOOOOOOOOOOOOOOOOOOOOOOOO
-        var geoXml = new geoXML3.parser({ singleInfoWindow: true, afterParse: kmlToJson});
-        geoXml.parse('/kml');
-        function kmlToJson(doc){
-            /*
-            for (var i=0; i<json_data[0].placemarks.length; i++) {
-                place_list.push({id: i, text: json_data[0].placemarks[i].name});
-            }
-            console.log(doc[0]);
-        }
-        */
         
         //gets a GeoJson of the layers of clicked layer item in the file tree and overlays them in the map
         //TODO3: updates the 3rd tab for layer ordering//////////////////////////////////////////////////////////////////////////////
@@ -102,6 +98,8 @@ function fileTreeInit(){
             var myLayer = L.geoJson(geojsonFeature, {style: {"color": color, "weight": 1}}).addTo(map);
             if (layers[index] != null){
                 map.removeLayer(layers[index]);
+                map.removeLayer(layers[2]);
+                console.log(layers);
             }
             layers[index] = myLayer;
             map.fitBounds(myLayer.getBounds());
@@ -180,7 +178,7 @@ function calculate(exposure, exposure_category, exposure_subcategory,
     .fail(function(data){
         var msg = 'Please input the necessary data(i.e. exposure, hazard layers).';
         $("#results").html(br + msg); 
-        alert("POST request failed!"); 
+        alert("Request failed!\n Please try again."); 
     });
 }
 

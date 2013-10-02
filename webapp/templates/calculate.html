@@ -25,16 +25,19 @@
                 <div id="tabs-1"></div>
                 <div id="tabs-2">
                     <ul id="layer_sortable">
-                        <li class="ui-state-default">
-                            <center><label id="exposure_label">Exposure</label></center>
+                        <li class="ui-state-default" id="exposure_layer" value="0">
+                            <center><label>Exposure</label></center>
                         </li>
-                        <li class="ui-state-default">
-                            <center><label id="hazard_label">Hazard</label></center>
+                        <li class="ui-state-default" id="hazard_layer" value="1">
+                            <center><label>Hazard</label></center>
                         </li>
-                        <li class="ui-state-default">
-                            <center><label id="impact_label">Impact</label></center>
+                        <li class="ui-state-default" id="impact_layer" value="2">
+                            <center><label>Impact</label></center>
                         </li>
                     </ul>
+                    <center>
+                        <input type="button" onclick="reset()" value="Reset">
+                    </center>
                 </div>
             </div>
         </div>

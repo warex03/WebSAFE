@@ -67,7 +67,7 @@ class weasyprint {
 }
 
 class mapnik {
-  package {['libmapnik2-dev', 'libmapnik', 'mapnik-utils', 'libboost-dev',
+  package {['libmapnik-dev', 'libmapnik', 'mapnik-utils', 'libboost-dev',
             'libboost-filesystem-dev', 'libboost-program-options-dev', 'libboost-python-dev',
             'libboost-regex-dev', 'libboost-system-dev', 'libboost-thread-dev', ]:
     ensure => present,

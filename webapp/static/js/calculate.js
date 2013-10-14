@@ -86,7 +86,7 @@ function mapInit() {
 
 //This function initializes the filetree but also listens to events related to that file tree
 function fileTreeInit(){
-    $("#tabs-1").fileTree({ script: "/filetree" }, function(file) {
+    $("#tabs-1").fileTree({ script: "http://localhost:5000/filetree" }, function(file) {
         //Note: this is a weak way of determining the layer type
         var type = (file.indexOf("/hazard/") != -1) ? "hazard" : "exposure";
         

@@ -7,11 +7,15 @@ body{
     position:fixed;
     width:100%;
 }
-.ui-tabs .ui-tabs-nav li a {
-    font-size:10pt !important;
-}
-#map{ 
+#map{
     height: 80%;
+}
+#tabs {
+    background-color: #ebebeb;
+    height: 80%;
+    overflow: scroll;
+    margin-left: 10px;
+    margin-right: 10px;
 }
 
 .legend {

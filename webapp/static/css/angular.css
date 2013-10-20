@@ -2,22 +2,9 @@ body{
     margin:0;
     padding:0;
 }
-.footer{
-    bottom:0;
-    position:fixed;
-    width:100%;
-}
 #map{
     height: 80%;
 }
-#tabs {
-    background-color: #ebebeb;
-    height: 80%;
-    overflow: scroll;
-    margin-left: 10px;
-    margin-right: 10px;
-}
-
 .legend {
     line-height: 18px;
     color: #555;
@@ -38,4 +25,47 @@ body{
 .info h4 {
     margin: 0 0 5px;
     color: #777;
+}
+
+#tabs {
+    background-color: #f3f3f3;
+    height: 80%;
+    overflow: scroll;
+    margin-left: 10px;
+    margin-right: 10px;
+    border:1px solid #AFAFAF;
+}
+#tabs-1 a, #tabs-2 a{ 
+    background-color: #c6e1ec;
+	cursor: pointer;
+}
+#result_panel {
+    background-color: #f3f3f3;
+    height: 80%;
+    margin-left: 10px;
+    margin-right: 10px;
+    border:1px solid #AFAFAF;
+    overflow: scroll;
+}
+#result_panel h4 {
+    left: 0px;
+    right: 0px;
+    z-index: 20;
+    background-color: #5eaeff;
+    border:1px solid #AFAFAF;
+	display: block;
+    position: absolute;
+	margin-top: 0px;
+	padding: .5em .5em .5em 1em;
+}
+#result_content input, select{
+    width: 100%;
+    font-size: 11px;
+}
+.active#tabs-1 a, .active#tabs-2 a{
+    background-color: #5eaeff;
+}
+.tab-pane ul{
+    padding-top: 10px;
+    font-size: 12px;
 }

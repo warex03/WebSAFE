@@ -41,7 +41,7 @@
 
         <tabset class="col-sm-3 pull-left" id="tabs">
             <tab heading="Layers" id="tabs-1"></tab>
-            <tab heading="Layer Order">
+            <tab heading="Layer Order" id="tabs-2">
                 <ul style="padding: 10px">
                     <li> buildings.shop</li>
                     <li> buildings.shop</li>
@@ -57,6 +57,49 @@
                 </ul>
             </tab>
         </tabset>
+        
+        <div class="col-sm-4 pull-right" id="result_panel">
+            <h4>Impact Calculator</h4>
+            <div id="result_content">
+                <center>Hazard</center>
+                <input id="hazard_filename" type="hidden">
+                <label> Layer </label>
+                <input id="hazard_name" type="text">
+                <label> Title </label>
+                <input id="hazard_title" type="text">
+                <label> Category </label>
+                <input id="hazard_category" type="text">
+                <label> Subcategory </label>
+                <select id="hazard_subcategory">
+                    <option val="">Not Set</option>
+                    <option val="earthquake">earthquake</option>
+                    <option val="flood">flood</option>
+                </select><br><br>
+                    
+                <center>Exposure</center>
+                <input id="exposure_filename" type="hidden">
+                <label> Layer </label>
+                <input id="exposure_name" type="text">
+                <label> Title </label>
+                <input id="exposure_title" type="text">
+                <label> Category </label>
+                <input id="exposure_category" type="text">
+                <label> Subcategory </label>
+                <select id="exposure_subcategory">
+                    <option val="">Not Set</option>
+                    <option val="population">population</option>
+                    <option val="structure">structure</option>
+                    <option val="road">road</option>
+                </select><br><br>
+                    
+                <center>
+                <p>
+                    <button class="btn btn-danger btn-xs" id="reset"> Reset </button>
+                    <button class="btn btn-primary btn-xs" id="calculate"> Calculate </button>
+                </p>
+                </center>
+            </div>
+        </div>
 
         <div class="container">
             <div id="map" ng-controller="MapCtrl"></div>
@@ -64,7 +107,6 @@
         
         <!-- Include all compiled plugins (below), or include individual files as needed -->
         <script src="{{ static_url("lib/angular-1.1.5/angular.min.js") }}"></script>
-        <script src="{{ static_url("lib/angular-1.1.5/angular-strap.js") }}"></script>
         <script src="{{ static_url("lib/angular-1.1.5/ui-bootstrap-custom-tpls-0.6.0.min.js") }}"></script>
         <script src="{{ static_url("lib/leaflet/leaflet.js") }}"></script>
         

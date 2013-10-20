@@ -1,0 +1,8 @@
+<div><strong>Subject:</strong> <span ng-bind="message.subject"></span></div>
+<div><strong>Sender:</strong> <span ng-bind="message.sender"></span></div>
+<div><strong>Date:</strong> <span ng-bind="message.date"></span></div>
+<div>
+    <strong>To:</strong>
+    <span ng-repeat='recipient in message.recipients' ng-bind="recipient"> </span>
+<div><span ng-bind="message.message"></span></div>
+<a href='#/'>Back to message list</a>

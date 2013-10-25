@@ -10,6 +10,10 @@
         <link href="{{ static_url("lib/leaflet/leaflet.css") }}" rel="stylesheet">
         <link href="{{ static_url("lib/bootstrap/css/bootstrap.min.css") }}" rel="stylesheet" media="screen">
         
+        
+        
+        <link href="{{ static_url("lib/jqueryFileTree/jqueryFileTree.css") }}" rel="stylesheet">
+        
     </head>
     
     <body>
@@ -40,75 +44,67 @@
         </div>
 
         <tabset class="col-sm-3 pull-left" id="tabs">
-            <tab heading="Layers" id="tabs-1"></tab>
-            <tab heading="Layer Order" id="tabs-2">
-                <ul style="padding: 10px">
-                    <li> buildings.shop</li>
-                    <li> buildings.shop</li>
-                    <li> buildings.shop</li>
-                    <li> buildings.shop</li>
-                    <li> buildings.shop</li>
-                    <li> buildings.shop</li>
-                    <li> buildings.shop</li>
-                    <li> buildings.shop</li>
-                    <li> buildings.shop</li>
-                    <li> buildings.shop</li>
-                    <li> buildings.shop</li>
-                </ul>
+            <tab heading="Layers" id="tabs-1">
+                <div id="filetree" ng-controller="FileTreeCtrl"> </div>
             </tab>
+            <tab heading="Layer Order" id="tabs-2"> </tab>
         </tabset>
         
         <div class="col-sm-4 pull-right" id="result_panel">
             <h4>Impact Calculator</h4>
-            <div id="result_content">
-                <center>Hazard</center>
-                <input id="hazard_filename" type="hidden">
+            <form id="result_form" ng-controller="CalculateCtrl">
+                <h5>Hazard</h5>
+                <input id="hazard_filename" type="hidden" ng-model="hazard.file" required>
                 <label> Layer </label>
-                <input id="hazard_name" type="text">
+                <input id="hazard_name" type="text" ng-model="hazard.name" required>
                 <label> Title </label>
-                <input id="hazard_title" type="text">
+                <input id="hazard_title" type="text" ng-model="hazard.title" required>
                 <label> Category </label>
-                <input id="hazard_category" type="text">
+                <input id="hazard_category" type="text" ng-model="hazard.category" required>
                 <label> Subcategory </label>
-                <select id="hazard_subcategory">
+                <select id="hazard_subcategory" ng-model="hazard.subcategory" required>
                     <option val="">Not Set</option>
                     <option val="earthquake">earthquake</option>
                     <option val="flood">flood</option>
                 </select><br><br>
                     
-                <center>Exposure</center>
-                <input id="exposure_filename" type="hidden">
+                <h5>Exposure</h5>
+                <input id="exposure_filename" type="hidden" ng-model="exposure.file" required>
                 <label> Layer </label>
-                <input id="exposure_name" type="text">
+                <input id="exposure_name" type="text" ng-model="exposure.name" required>
                 <label> Title </label>
-                <input id="exposure_title" type="text">
+                <input id="exposure_title" type="text" ng-model="exposure.title" required>
                 <label> Category </label>
-                <input id="exposure_category" type="text">
+                <input id="exposure_category" type="text" ng-model="exposure.category" required>
                 <label> Subcategory </label>
-                <select id="exposure_subcategory">
+                <select id="exposure_subcategory" ng-model="exposure.subcategory">
                     <option val="">Not Set</option>
                     <option val="population">population</option>
                     <option val="structure">structure</option>
                     <option val="road">road</option>
                 </select><br><br>
                     
-                <center>
                 <p>
-                    <button class="btn btn-danger btn-xs" id="reset"> Reset </button>
-                    <button class="btn btn-primary btn-xs" id="calculate"> Calculate </button>
+                    <button class="btn btn-danger btn-xs" id="reset"
+                        ng-click='reset()'> Reset </button>
+                    <button class="btn btn-primary btn-xs" id="calculate"
+                        ng-click='calc'> Calculate </button>
                 </p>
-                </center>
-            </div>
+            </ng-form>
         </div>
 
         <div class="container">
-            <div id="map" ng-controller="MapCtrl"></div>
+                <div id="map" ng-controller="MapCtrl"></div>
         </div>
         
         <!-- Include all compiled plugins (below), or include individual files as needed -->
         <script src="{{ static_url("lib/angular-1.1.5/angular.min.js") }}"></script>
         <script src="{{ static_url("lib/angular-1.1.5/ui-bootstrap-custom-tpls-0.6.0.min.js") }}"></script>
         <script src="{{ static_url("lib/leaflet/leaflet.js") }}"></script>
+        
+        <script src="{{ static_url("js/jquery-1.9.1.js") }}"></script>
+        <script src="{{ static_url("js/jquery-ui.js") }}"></script>
+        <script src="{{ static_url("lib/jqueryFileTree/jqueryFileTree.js") }}"></script>
         
         <!-- Include user-defined scripts -->
         <script src="{{ static_url("js/angular.js") }}"></script>

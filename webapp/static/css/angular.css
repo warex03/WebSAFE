@@ -2,18 +2,15 @@ body{
     margin:0;
     padding:0;
 }
-#map{
-    height: 80%;
-}
+#map{ height: 80%; }
 .legend {
-    line-height: 18px;
     color: #555;
 }
 .legend i {
+    margin-right: 10px;
     width: 18px;
     height: 18px;
     float: left;
-    margin-left: 10px;
     opacity: 0.7;
 }
 .info {
@@ -39,6 +36,9 @@ body{
     background-color: #c6e1ec;
 	cursor: pointer;
 }
+.active#tabs-1 a, .active#tabs-2 a{
+    background-color: #5eaeff;
+}
 #result_panel {
     background-color: #f3f3f3;
     height: 80%;
@@ -47,25 +47,31 @@ body{
     border:1px solid #AFAFAF;
     overflow: scroll;
 }
+#result_panel h5, p{ text-align: center; }
 #result_panel h4 {
     left: 0px;
     right: 0px;
     z-index: 20;
     background-color: #5eaeff;
-    border:1px solid #AFAFAF;
 	display: block;
     position: absolute;
 	margin-top: 0px;
-	padding: .5em .5em .5em 1em;
+	padding: .2em .2em .2em 1em;
 }
-#result_content input, select{
+#result_form {
+    position: relative;
+    top: 35px;
+}
+#result_form input, select, label{
     width: 100%;
     font-size: 11px;
 }
-.active#tabs-1 a, .active#tabs-2 a{
-    background-color: #5eaeff;
-}
+#result_panel select{ font-size: 11px; }
 .tab-pane ul{
     padding-top: 10px;
     font-size: 12px;
+}
+#filetree {
+    padding-top: 10px;
+    padding-left: 10px;
 }

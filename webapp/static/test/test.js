@@ -1,9 +1,9 @@
 angular.module('test', ['ui.bootstrap'])
     .config(testRouteConfig);
     
-function testRouteConfig($routeProvider){
+function testRouteConfig($routeProvider, $locationProvider){
     $routeProvider
-    .when('/', {
+    .when('/test', {
         controller: ListCtrl,
         templateUrl: 'list'
     })
@@ -11,5 +11,7 @@ function testRouteConfig($routeProvider){
         controller: DetailCtrl,
         templateUrl: 'detail'
     })
-    .otherwise({redirectTo: '/'})
+    .otherwise({redirectTo: '/test'})
+    
+    //$locationProvider.html5Mode(true);
 }

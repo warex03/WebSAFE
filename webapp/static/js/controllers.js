@@ -32,11 +32,13 @@ function FileTreeCtrl($scope, $element, Exposure, Hazard){
             var color = (type == "hazard") ? "#E5743D" : "#009999";
             var index = (type == "hazard") ? 1 : 0;
             var myLayer = L.geoJson(geojsonFeature, {style: {"color": color, "weight": 1}}).addTo(map);
+            /*
             if (layers[index] != null){
                 map.removeLayer(layers[index]);
                 map.removeLayer(layers[2]);
                 console.log(layers);
             }
+            */
             layers[index] = myLayer;
             map.fitBounds(myLayer.getBounds());
         });
@@ -44,42 +46,42 @@ function FileTreeCtrl($scope, $element, Exposure, Hazard){
         //update the layer info fields when the user clicks on a file in the file tree
         $.post("/layers", {filename: file, layer_type: type})
             .done(function(data){
-                //initializeFields(type);
+                data.file = file;
                 if (type=='exposure'){
                     $scope.$apply(angular.copy(data, Exposure));
                 }else{
                     $scope.$apply(angular.copy(data, Hazard));
                 }
             })
-            .fail(function(){ alert("Failed to load the style for the impact layer!"); });
-        
+            .fail(function(){ alert("Failed to load the impact layer!"); });
     });
 }
 
 function CalculateCtrl($scope, $element, Exposure, Hazard){
     $scope.exposure = Exposure;
     $scope.hazard = Hazard;
-    var br = '<br><br><br><br><br><br><br>';
-    var msg = 'Please wait while the system is calculating the results...';
+    var msg = 'Please wait while the system is calculating the results...<br>';
     var progressbar = '<div class="progress progress-striped active">' +
         '<div class="progress-bar"  role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div></div>';
     
     $scope.calc = function(){
-        $($element).html(br +msg+ progressbar);
-        calculate(exposure, exposure_category, exposure_subcategory,
-            hazard, hazard_category, hazard_subcategory);
+        if($scope.result_form.$valid){
+            $($element).html(msg+ progressbar).css({"text-align": "center", "top": "240px"});
+            calculate($scope.exposure, $scope.hazard, $element);
+        }else{
+            alert('Please choose hazard and exposure layers!');
+        }
     }
 }
 
 //Function that sends a post request containing the filenames of the hazard and exposure layers to the server
-function calculate(exposure, exposure_category, exposure_subcategory,
-                    hazard, hazard_category, hazard_subcategory){
+function calculate(exposure, hazard, element){
     $.post("/calculate", 
-        {purpose: "calculate", hazard: hazard, hazard_category: hazard_category, hazard_subcategory: hazard_subcategory,
-        exposure: exposure, exposure_category: exposure_category, exposure_subcategory: exposure_subcategory})
+        {purpose: "calculate", hazard: hazard.file, hazard_category: hazard.category, hazard_subcategory: hazard.subcategory,
+        exposure: exposure.file, exposure_category: exposure.category, exposure_subcategory: exposure.subcategory})
     .done(function(data){
         var pdf_button = '<button class="btn btn-primary btn-xs pull-left" id="view_pdf"> View PDF </button>';
-        $("#results").html(pdf_button + data);
+        $(element).html(pdf_button + data).css({"text-align": "center", "top": "50px"});
         
         //Create the pdf report
         $.post("/calculate", {purpose: "pdf", html: data});
@@ -124,13 +126,4 @@ function calculate(exposure, exposure_category, exposure_subcategory,
         //$("#results").html(br + msg); 
         alert("Request failed!\n Please try again."); 
     });
-}
-
-//This function resets the attribute fields of the "type" layer in the layers info sidebar
-function initializeFields(type){
-    $("#"+type+"_"+"filename").val("");
-    $("#"+type+"_"+"name").val("");
-    $("#"+type+"_"+"title").val("");
-    $("#"+type+"_"+"category").val("");
-    $("#"+type+"_"+"subcategory").val("");
 }

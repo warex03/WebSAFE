@@ -52,32 +52,32 @@
         
         <div class="col-sm-4 pull-right" id="result_panel">
             <h4>Impact Calculator</h4>
-            <form id="result_form" ng-controller="CalculateCtrl">
+            <form id="result_form" name="result_form" ng-controller="CalculateCtrl">
                 <h5>Hazard</h5>
-                <input id="hazard_filename" type="hidden" ng-model="hazard.file" required>
+                <input type="hidden" ng-model="hazard.file" required>
                 <label> Layer </label>
-                <input id="hazard_name" type="text" ng-model="hazard.name" required>
+                <input type="text" ng-model="hazard.name" required>
                 <label> Title </label>
-                <input id="hazard_title" type="text" ng-model="hazard.title" required>
+                <input type="text" ng-model="hazard.title" required>
                 <label> Category </label>
-                <input id="hazard_category" type="text" ng-model="hazard.category" required>
+                <input type="text" ng-model="hazard.category" required>
                 <label> Subcategory </label>
-                <select id="hazard_subcategory" ng-model="hazard.subcategory" required>
+                <select ng-model="hazard.subcategory" required>
                     <option val="">Not Set</option>
                     <option val="earthquake">earthquake</option>
                     <option val="flood">flood</option>
                 </select><br><br>
                     
                 <h5>Exposure</h5>
-                <input id="exposure_filename" type="hidden" ng-model="exposure.file" required>
+                <input type="hidden" ng-model="exposure.file" required>
                 <label> Layer </label>
-                <input id="exposure_name" type="text" ng-model="exposure.name" required>
+                <input type="text" ng-model="exposure.name" required>
                 <label> Title </label>
-                <input id="exposure_title" type="text" ng-model="exposure.title" required>
+                <input type="text" ng-model="exposure.title" required>
                 <label> Category </label>
-                <input id="exposure_category" type="text" ng-model="exposure.category" required>
+                <input type="text" ng-model="exposure.category" required>
                 <label> Subcategory </label>
-                <select id="exposure_subcategory" ng-model="exposure.subcategory">
+                <select ng-model="exposure.subcategory" required>
                     <option val="">Not Set</option>
                     <option val="population">population</option>
                     <option val="structure">structure</option>
@@ -88,7 +88,7 @@
                     <button class="btn btn-danger btn-xs" id="reset"
                         ng-click='reset()'> Reset </button>
                     <button class="btn btn-primary btn-xs" id="calculate"
-                        ng-click='calc'> Calculate </button>
+                        ng-click='calc()'> Calculate </button>
                 </p>
             </ng-form>
         </div>

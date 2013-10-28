@@ -32,13 +32,13 @@ function FileTreeCtrl($scope, $element, Exposure, Hazard){
             var color = (type == "hazard") ? "#E5743D" : "#009999";
             var index = (type == "hazard") ? 1 : 0;
             var myLayer = L.geoJson(geojsonFeature, {style: {"color": color, "weight": 1}}).addTo(map);
-            /*
+            
             if (layers[index] != null){
                 map.removeLayer(layers[index]);
                 map.removeLayer(layers[2]);
                 console.log(layers);
             }
-            */
+            
             layers[index] = myLayer;
             map.fitBounds(myLayer.getBounds());
         });
@@ -63,6 +63,20 @@ function CalculateCtrl($scope, $element, Exposure, Hazard){
     var msg = 'Please wait while the system is calculating the results...<br>';
     var progressbar = '<div class="progress progress-striped active">' +
         '<div class="progress-bar"  role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div></div>';
+    
+    $scope.reset = function(){
+        angular.copy({}, Exposure);
+        angular.copy({}, Hazard);
+        for(var i=0; i<3; i++){
+            if (layers[i] != null){ 
+                map.removeLayer(layers[i]);
+                layers[i] = null;                
+            }
+        }
+        map.setView([12.3, 122], 5);
+        div_legend.innerHTML = '<h4>Legend</h4>' + '<i style="background:#E5743D"></i>Hazard<br>' +
+            '<i style="background:#009999"></i>Exposure<br>';
+    }
     
     $scope.calc = function(){
         if($scope.result_form.$valid){

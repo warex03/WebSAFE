@@ -1,4 +1,10 @@
 /webapp/data/*
+/webapp/static/lib/GeoExt/*
+/webapp/static/lib/ext-4.2.1/*
+/webapp/static/lib/openlayers/*
 
 phantomjs
 /presentation/*
+
+/geoext2/*
+/geoext/*

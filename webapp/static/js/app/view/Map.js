@@ -49,7 +49,8 @@ Ext.define('NOAH.view.Map', {
 		});
         
         var wms = new OpenLayers.Layer.ArcGISCache( "Philippine Geoportal Basemap",
-			"http://geoportal.gov.ph/ArcGIS/rest/services/Basemap/PGS_Basemap/MapServer", {
+			//"http://geoportal.gov.ph/ArcGIS/rest/services/Basemap/PGS_Basemap/MapServer",
+            "http://202.90.149.233:8082/geoserver/geoportal/wms", {
 			isBaseLayer: true,
 
 			//From layerInfo above                        

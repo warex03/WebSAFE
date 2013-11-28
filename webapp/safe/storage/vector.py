@@ -1,6 +1,7 @@
 import os
 import sys
 import numpy
+import json
 import logging
 
 import copy as copy_module
@@ -523,7 +524,7 @@ class Vector(Layer):
 
         msg = ('Invalid file type for file %s. Only extensions '
                'sqlite, shp or gml allowed.' % filename)
-        verify(extension in ['.sqlite', '.shp', '.gml'], msg)
+        verify(extension in ['.sqlite', '.shp', '.gml', '.json'], msg)
         driver = DRIVER_MAP[extension]
 
         # FIXME (Ole): Tempory flagging of GML issue (ticket #18)
@@ -534,7 +535,7 @@ class Vector(Layer):
             raise WriteLayerError(msg)
 
         # Derive layername from filename (excluding preceding dirs)
-        if sublayer is None or extension == '.shp':
+        if sublayer is None or extension == '.shp' or extension == '.json':
             layername = os.path.split(basename)[-1]
         else:
             layername = sublayer
@@ -666,7 +667,13 @@ class Vector(Layer):
             # Store attributes
             if store_attributes:
                 for j, name in enumerate(fields):
-                    actual_field_name = layer_def.GetFieldDefn(j).GetNameRef()
+                    field_def = layer_def.GetFieldDefn(j)
+                    
+                    if field_def is None:
+                        pass
+                    else:
+                        actual_field_name = field_def.GetNameRef()
+                        #print actual_field_name
 
                     val = data[i][name]
 

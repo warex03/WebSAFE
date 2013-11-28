@@ -108,12 +108,15 @@ def calculate_impact(layers, impact_fcn):
         extension = '.tif'
         # use default style for raster
     else:
-        extension = '.shp'
+        #extension = '.shp'
+        extension = '.json' ######################################################################################################################
         # use default style for vector
 
-    output_filename = unique_filename(suffix=extension)
+    #output_filename = unique_filename(suffix=extension)
+    output_filename = "/vagrant/webapp/data/impact/impact.json"
     F.filename = output_filename
     F.write_to_file(output_filename)
+    ############################################################################################################################################
 
     # Establish default name (layer1 X layer1 x impact_function)
     if not F.get_name():

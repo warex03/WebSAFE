@@ -28,7 +28,8 @@ DRIVER_MAP = {'.sqlite': 'SQLITE',
               '.shp': 'ESRI Shapefile',
               '.gml': 'GML',
               '.tif': 'GTiff',
-              '.asc': 'AAIGrid'}
+              '.asc': 'AAIGrid',
+              '.json': 'GeoJSON'}
 
 # Map between Python types and OGR field types
 # FIXME (Ole): I can't find a double precision type for OGR

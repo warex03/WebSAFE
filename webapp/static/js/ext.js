@@ -14,8 +14,8 @@ Ext.application({
     
     name: 'NOAH',
     appFolder: '/static/js/app',
-    autoCreateViewport: true,
-    /*
+    //autoCreateViewport: true,
+    
     launch: function() {
 
         Ext.state.Manager.setProvider(Ext.create('Ext.state.CookieProvider', {
@@ -92,5 +92,5 @@ Ext.application({
             ]
         });
     }
-    */
+    
 });

@@ -9,24 +9,14 @@ from safe.impact_functions.core import requirements_collect, get_doc_string, \
     requirement_check
 from safe.impact_functions.inundation.flood_OSM_building_impact \
     import FloodBuildingImpactFunction
+from safe.impact_functions.sample.sample \
+    import TestImpactFunction
     
 from weasyprint import HTML, CSS
 
 class IndexHandler(tornado.web.RequestHandler):
 	def get(self):
 		self.render("index.html")
-        
-class TestHandler(tornado.web.RequestHandler):
-	def get(self):
-		self.render("test.html")
-        
-class ListHandler(tornado.web.RequestHandler):
-	def get(self):
-		self.render("test-list.html")
-        
-class DetailHandler(tornado.web.RequestHandler):
-	def get(self):
-		self.render("test-detail.html")
         
 class AngularHandler(tornado.web.RequestHandler):
 	def get(self):
@@ -104,7 +94,7 @@ class CalculateHandler(tornado.web.RequestHandler):
                         json.dump(impact.style_info, style_json)
                         style_json.close()
                 
-                    call(['ogr2ogr', '-f', 'GeoJSON', output, impact.filename])
+                    #call(['ogr2ogr', '-f', 'GeoJSON', output, impact.filename])
         
                     #create the impact summary file
                     result = impact.keywords["impact_summary"]

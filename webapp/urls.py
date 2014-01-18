@@ -1,5 +1,5 @@
 from handlers.handlers import IndexHandler, CalculateHandler, \
-    ImpactJSONHandler, ImpactPDFHandler, ImpactKMLHandler, \
+    ImpactJSONHandler, ImpactPDFHandler, \
     ImpactStyleHandler, ImpactMapPDFHandler, FileTreeHandler, \
     AngularHandler, ExtHandler
 from handlers.layerapi_handlers import LayerHandler
@@ -23,7 +23,6 @@ handlers += [
     (r"/json", ImpactJSONHandler),
     (r"/mappdf", ImpactMapPDFHandler),
     (r"/pdf", ImpactPDFHandler),
-    (r"/kml", ImpactKMLHandler),
     (r"/filetree", FileTreeHandler),
 ]
 

@@ -112,7 +112,9 @@ def calculate_impact(layers, impact_fcn):
         extension = '.json' ######################################################################################################################
         # use default style for vector
 
-    #output_filename = unique_filename(suffix=extension)
+    tempdir = "/vagrant/webapp/data/impact"
+    output_filename2 = unique_filename(suffix=extension, dir=tempdir)
+    print output_filename2
     output_filename = "/vagrant/webapp/data/impact/impact.json"
     F.filename = output_filename
     F.write_to_file(output_filename)

@@ -25,14 +25,6 @@ class AngularHandler(tornado.web.RequestHandler):
 class ExtHandler(tornado.web.RequestHandler):
     def get(self):
         self.render("ext.html")
-        
-class ExposuresHandler(tornado.web.RequestHandler):
-    def get(self):
-        self.render("exposure.html")
-
-class HazardsHandler(tornado.web.RequestHandler):
-    def get(self):
-        self.render("hazard.html")
  
 class CalculateHandler(tornado.web.RequestHandler):
 

@@ -5,7 +5,7 @@ from subprocess import call
 
 from safe.api import read_layer
 
-'''This is the handler for the API call that returns the json metadata of a exposure layers 
+'''This is the handler for the API call that returns the json metadata of exposure layers 
 '''
 class ExposureLayerHandler(tornado.web.RequestHandler):
     def get(self):
@@ -22,7 +22,7 @@ class ExposureLayerHandler(tornado.web.RequestHandler):
         except:
             raise HTTPError(500)
             
-'''This is the handler for the API call that returns the json metadata of a exposure layers 
+'''This is the handler for the API call that returns the json metadata of hazard layers 
 '''
 class HazardLayerHandler(tornado.web.RequestHandler):
     def get(self):

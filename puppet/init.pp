@@ -15,11 +15,6 @@ class update {
     before => Exec['apt-update']
   }
   
-  exec {'add-postgresql':
-    command => '/usr/bin/add-apt-repository ppa:pitti/postgresql -y',
-    before => Exec['apt-update']
-  }
-  
   exec {'add-mapnik':
     command => '/usr/bin/add-apt-repository ppa:mapnik/v2.2.0',
     before => Exec['apt-update']
@@ -38,12 +33,12 @@ class update {
 class inasafe {
   package {['python-pip', 'rsync', 'git', 'pep8', 'python-nose', 'python-coverage', 'python-sphinx',
             'pyqt4-dev-tools', 'pyflakes', 'python-dev', 'python-gdal', 'curl', 'libpq-dev',
-            'python-psycopg2', 'gdal-bin', 'postgresql-9.2', ]:
+            'python-psycopg2', 'gdal-bin']:
     ensure => present,
     provider => 'apt'
   }
   
-  package { ['tornado', 'numpy', 'sqlalchemy']:
+  package { ['tornado', 'numpy']:
     ensure  => installed,
     provider => pip
   }
@@ -60,7 +55,7 @@ class weasyprint {
     provider => 'apt'
   }
   
-  package { ['weasyprint', 'pyphen']:
+  package { ['weasyprint', 'pyphen', 'html5lib', 'tinycss', 'cssselect', 'cffi', 'cairocffi', 'cairosvg']:
     ensure  => installed,
     provider => pip
   }
@@ -79,6 +74,3 @@ class {'update':}
 class {'inasafe':}
 class {'weasyprint':}
 class {'mapnik':}
-
-#cloud-sptheme 
-#python-nosexcover
